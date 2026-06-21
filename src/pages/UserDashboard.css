@@ -1,0 +1,264 @@
+/* ── User Dashboard Styles ──────────────────────────────────────────── */
+
+.user-dash {
+  min-height: 100svh;
+  background: #0b1414;
+  color: #f1f5f4;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Header ────────────────────────────────────────────────────────── */
+
+.user-dash__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: #0f1b1b;
+}
+
+.user-dash__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-dash__logo-icon {
+  width: 28px;
+  height: 28px;
+  background: #4fd1c5;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  transform: rotate(45deg);
+}
+
+.user-dash__logo-icon svg {
+  transform: rotate(-45deg);
+}
+
+.user-dash__logo-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.user-dash__header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-dash__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4fd1c5, #38b2ac);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0b1414;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+/* ── Main Content ──────────────────────────────────────────────────── */
+
+.user-dash__main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 3rem;
+}
+
+/* ── Welcome ───────────────────────────────────────────────────────── */
+
+.user-dash__welcome {
+  margin-bottom: 2.5rem;
+}
+
+.user-dash__welcome-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.5px;
+  color: #f1f5f4;
+  line-height: 1.2;
+}
+
+.user-dash__welcome-title span {
+  color: #4fd1c5;
+}
+
+.user-dash__welcome-sub {
+  font-size: 0.95rem;
+  color: #7d9d9a;
+  max-width: 560px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Feature Card Grid ─────────────────────────────────────────────── */
+
+.user-dash__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.user-dash__card {
+  background: #142121;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 1.5rem;
+  position: relative;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.user-dash__card:hover {
+  border-color: rgba(79, 209, 197, 0.2);
+  transform: translateY(-2px);
+}
+
+.user-dash__card h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+  color: #f1f5f4;
+}
+
+.user-dash__card p {
+  font-size: 0.85rem;
+  color: #7d9d9a;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.user-dash__card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.85rem;
+}
+
+.user-dash__card-icon--mint {
+  color: #4fd1c5;
+  background: rgba(79, 209, 197, 0.12);
+}
+
+.user-dash__card-icon--blue {
+  color: #60a5fa;
+  background: rgba(96, 165, 250, 0.12);
+}
+
+.user-dash__card-icon--gold {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
+}
+
+.user-dash__card-icon--coral {
+  color: #f56565;
+  background: rgba(245, 101, 101, 0.12);
+}
+
+.user-dash__card-tag {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border-radius: 5px;
+  color: #7d9d9a;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ── Quick Stats ───────────────────────────────────────────────────── */
+
+.user-dash__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.user-dash__stat {
+  background: #142121;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 1.15rem 1rem;
+  text-align: center;
+}
+
+.user-dash__stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f1f5f4;
+  margin: 0 0 0.15rem;
+  letter-spacing: -0.02em;
+}
+
+.user-dash__stat-label {
+  font-size: 0.75rem;
+  color: #7d9d9a;
+  margin: 0;
+}
+
+/* ── Explore Link ──────────────────────────────────────────────────── */
+
+.user-dash__explore {
+  text-align: center;
+}
+
+.user-dash__explore-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #4fd1c5;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: gap 0.2s, color 0.2s;
+}
+
+.user-dash__explore-link:hover {
+  gap: 0.65rem;
+  color: #6ee7db;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .user-dash__main {
+    padding: 1.5rem 1.25rem 2rem;
+  }
+
+  .user-dash__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .user-dash__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .user-dash__welcome-title {
+    font-size: 1.35rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-dash__header {
+    padding: 0.75rem 1rem;
+  }
+
+  .user-dash__stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
