@@ -1,12 +1,13 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuthStore } from '../store/authStore';
+import { authApi } from '../api/authApi';
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import loginHero from '../assets/login-hero.png';
 import './LoginPage.css';
 
 export function LoginPage() {
-  const { login, isAuthenticated, user } = useAuth();
+  const { setAuth, isAuthenticated, user } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -23,7 +24,7 @@ export function LoginPage() {
       from ||
       (user.role === 'SuperAdmin' || user.role === 'Admin'
         ? '/admin/dashboard'
-        : '/dashboard');
+        : '/app');
     navigate(destination, { replace: true });
     return null;
   }
@@ -39,8 +40,15 @@ export function LoginPage() {
 
     setIsLoading(true);
     try {
-      await login({ email: email.trim(), password });
-      // AuthContext updates user state; the redirect above will handle navigation
+      const response = await authApi.login({ email: email.trim(), password });
+      setAuth(response);
+      const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
+      const destination =
+        from ||
+        (response.role === 'SuperAdmin' || response.role === 'Admin'
+          ? '/admin'
+          : '/app');
+      navigate(destination, { replace: true });
     } catch (err: unknown) {
       if (err && typeof err === 'object' && 'response' in err) {
         const axiosErr = err as { response?: { data?: { message?: string }; status?: number } };

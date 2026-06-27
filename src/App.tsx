@@ -9,88 +9,64 @@ import { SettingsPage } from './admin/pages/SettingsPage'
 import { CreateAdminPage } from './admin/pages/CreateAdminPage'
 import { HomePage } from './pages/HomePage'
 import { ListingDetailPage } from './pages/ListingDetailPage'
-import { LoginPage } from './pages/LoginPage'
-import { PlaceholderPage } from './home/PlaceholderPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { AdminLoginPage } from './pages/AdminLoginPage'
-import { UserDashboardPage } from './pages/UserDashboardPage'
 import { UnauthorizedPage } from './pages/UnauthorizedPage'
 import { ProtectedRoute } from './components/ProtectedRoute'
+
+// New Phase 4 Layouts and Pages
+import { DashboardLayout } from './components/layout/DashboardLayout'
+import { FactoryDashboard } from './pages/FactoryDashboard'
+import { Marketplace } from './pages/Marketplace'
+import { LoginPage } from './pages/LoginPage'
+
+// Inline placeholder for new layout routes that aren't built yet
+const ComingSoon = ({ title }: { title: string }) => (
+  <div className="flex flex-col items-center justify-center h-full p-8 text-center text-gray-400">
+    <div className="w-16 h-16 mb-4 rounded-full bg-[#1a2e2e] flex items-center justify-center">
+      <svg className="w-8 h-8 text-[#2dd4bf]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+    </div>
+    <h2 className="text-2xl font-bold text-white mb-2">{title}</h2>
+    <p>This module is under construction.</p>
+  </div>
+);
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/listing/:id" element={<ListingDetailPage />} />
-      <Route
-        path="/listings"
-        element={
-          <PlaceholderPage
-            title="My Listings"
-            description="Sign in to manage your waste and resource listings."
-            actionLabel="Sign in"
-            actionTo="/login"
-          />
-        }
-      />
-      <Route
-        path="/orders"
-        element={
-          <PlaceholderPage
-            title="Orders"
-            description="Track your bulk purchases and escrow transactions here. Sign in to view your order history."
-            actionLabel="Sign in"
-            actionTo="/login"
-          />
-        }
-      />
-      <Route
-        path="/messages"
-        element={
-          <PlaceholderPage
-            title="Messages"
-            description="You have 3 unread messages. Sign in to chat with sellers and buyers."
-            actionLabel="Sign in"
-            actionTo="/login"
-          />
-        }
-      />
-      <Route
-        path="/impact"
-        element={
-          <PlaceholderPage
-            title="Impact Reports"
-            description="View your circular economy impact metrics and sustainability reports."
-            actionLabel="Sign in"
-            actionTo="/login"
-          />
-        }
-      />
-      <Route
-        path="/settings"
-        element={
-          <PlaceholderPage
-            title="Settings"
-            description="Manage your account preferences, notifications, and company profile."
-            actionLabel="Sign in"
-            actionTo="/login"
-          />
-        }
-      />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/admin/login" element={<AdminLoginPage />} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
-      
+
+      {/* Old dashboard redirect */}
+      <Route path="/dashboard" element={<Navigate to="/app" replace />} />
+
+      {/* Main App Routes */}
       <Route
-        path="/dashboard"
+        path="/app"
         element={
           <ProtectedRoute allowedRoles={['User', 'Admin', 'SuperAdmin']}>
-            <UserDashboardPage />
+            <DashboardLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<FactoryDashboard />} />
+        <Route path="marketplace" element={<Marketplace />} />
+        <Route path="marketplace/:id" element={<ComingSoon title="Listing Details" />} />
+        <Route path="listings" element={<ComingSoon title="My Listings" />} />
+        <Route path="listings/new" element={<ComingSoon title="New Listing" />} />
+        <Route path="analytics" element={<ComingSoon title="Analytics" />} />
+        <Route path="escrow" element={<ComingSoon title="Escrow" />} />
+        <Route path="settings" element={<ComingSoon title="Settings" />} />
+        <Route path="support" element={<ComingSoon title="Support" />} />
+      </Route>
 
+      {/* Admin Routes */}
       <Route
         path="/admin"
         element={
@@ -115,7 +91,7 @@ export default function App() {
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
-      
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

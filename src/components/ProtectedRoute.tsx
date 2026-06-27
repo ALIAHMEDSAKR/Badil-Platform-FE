@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuthStore } from '../store/authStore';
 import type { UserRoleString } from '../types/auth';
 
 interface ProtectedRouteProps {
@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-  const { isAuthenticated, isLoading, user, token, logout } = useAuth();
+  const { isAuthenticated, isLoading, user, token, logout } = useAuthStore();
   const location = useLocation();
 
   if (isLoading) {
