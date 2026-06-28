@@ -45,6 +45,14 @@ export interface LoginResponse {
   role: UserRoleString;
 }
 
+/** GET /api/Auth/profile — response (same shape as login, token may be empty) */
+export interface UserProfile {
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: UserRoleString;
+}
+
 // ============ Admin DTOs ============
 
 /** POST /api/admin/create — request body (SuperAdmin only) */

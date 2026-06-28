@@ -1,10 +1,10 @@
 // ═══════════════════════════════════════════════════════════════════
 // Badil Platform — Waste Listing Domain Types
-// Source: OpenAPI 3.0.1 schemas: CreateWasteListingCommand, UpdateWasteListingCommand
-// Endpoints: /api/WasteListing (GET, POST), /api/WasteListing/{id} (GET, PUT, DELETE)
+// Source: Badil.Application Features/WasteListing DTOs & Commands
+// Endpoints: /api/WasteListing
 // ═══════════════════════════════════════════════════════════════════
 
-import type { ListingStatus } from './enums';
+import type { ListingStatusString } from "./enums";
 
 // ── Commands (Write) ───────────────────────────────────────────────
 
@@ -19,31 +19,36 @@ export interface CreateWasteListingCommand {
 
 /** PUT /api/WasteListing/{id} — update an existing listing */
 export interface UpdateWasteListingCommand {
-  id: string; // uuid
+  id: string;
   materialType: string | null;
   quantity: number;
   description: string | null;
   imageUrls: string[] | null;
   suggestedPrice: number;
-  status: ListingStatus;
+  status: ListingStatusString;
+}
+
+/** GET /api/WasteListing/search — query parameters */
+export interface SearchWasteListingsParams {
+  materialType?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  status?: ListingStatusString;
 }
 
 // ── DTOs (Read) ────────────────────────────────────────────────────
 
-/**
- * GET /api/WasteListing & GET /api/WasteListing/{id}
- * Inferred response shape — includes ownership + status + audit fields.
- */
+/** GET /api/WasteListing & GET /api/WasteListing/{id} */
 export interface WasteListingDto {
-  id: string; // uuid
-  companyId: string; // uuid — the company that owns this listing
-  sellerId: string; // uuid — the user who created it
+  id: string;
+  userId: string;
   materialType: string;
+  aiStandardizedTag: string;
   quantity: number;
   description: string;
   imageUrls: string[];
   suggestedPrice: number;
-  status: ListingStatus;
-  createdAt: string; // ISO 8601
-  updatedAt: string; // ISO 8601
+  status: ListingStatusString;
+  isVisuallyValidated: boolean;
+  createdAt: string;
 }

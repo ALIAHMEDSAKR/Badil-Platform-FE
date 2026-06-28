@@ -4,7 +4,7 @@
 // Endpoints: /api/Notification (GET, POST), /api/Notification/{id} (GET, PUT, DELETE)
 // ═══════════════════════════════════════════════════════════════════
 
-import type { NotificationType } from './enums';
+import type { NotificationType } from "./enums";
 
 // ── Commands (Write) ───────────────────────────────────────────────
 

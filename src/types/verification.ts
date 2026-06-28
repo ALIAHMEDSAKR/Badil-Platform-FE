@@ -4,7 +4,7 @@
 // Endpoints: /api/VerificationRequest (GET, POST), /api/VerificationRequest/{id} (GET, PUT, DELETE)
 // ═══════════════════════════════════════════════════════════════════
 
-import type { VerificationStatus } from './enums';
+import type { VerificationStatusString } from "./enums";
 
 // ── Commands (Write) ───────────────────────────────────────────────
 
@@ -16,8 +16,13 @@ export interface CreateVerificationRequestCommand {
 
 /** PUT /api/VerificationRequest/{id} — admin: approve/reject verification */
 export interface UpdateVerificationRequestCommand {
-  id: string; // uuid
-  status: VerificationStatus;
+  id: string;
+  status: VerificationStatusString;
+}
+
+/** POST /api/VerificationRequest/{id}/reject — admin: reject with reason */
+export interface RejectVerificationRequestCommand {
+  reason: string;
 }
 
 // ── DTOs (Read) ────────────────────────────────────────────────────
@@ -27,12 +32,10 @@ export interface UpdateVerificationRequestCommand {
  * Inferred response shape — includes review status + admin info.
  */
 export interface VerificationRequestDto {
-  id: string; // uuid
-  companyId: string; // uuid
+  id: string;
+  companyId: string;
   documentUrls: string[];
-  status: VerificationStatus;
-  reviewedByAdminId: string | null; // uuid — admin who reviewed
-  remarks: string | null;
-  createdAt: string; // ISO 8601
-  updatedAt: string; // ISO 8601
+  status: VerificationStatusString;
+  reviewedByAdminId: string | null;
+  createdAt: string;
 }

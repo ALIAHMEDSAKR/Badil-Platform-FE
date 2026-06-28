@@ -5,8 +5,8 @@
 // Matches: screen5.png (Factory Dashboard)
 // ═══════════════════════════════════════════════════════════════════
 
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ListOrdered,
   Shield,
@@ -16,16 +16,16 @@ import {
   Filter,
   Download,
   MoreVertical,
-} from 'lucide-react';
-import { Card } from '../components/ui/Card';
-import { Badge } from '../components/ui/Badge';
-import { Button } from '../components/ui/Button';
-import { DataTable, type DataTableColumn } from '../components/ui/DataTable';
-import { wasteListingApi } from '../api/wasteListingApi';
-import { transactionApi } from '../api/transactionApi';
-import type { WasteListingDto } from '../types/wasteListing';
-import type { TransactionDto } from '../types/transaction';
-import { EscrowStatus } from '../types/enums';
+} from "lucide-react";
+import { Card } from "../components/ui/Card";
+import { Badge } from "../components/ui/Badge";
+import { Button } from "../components/ui/Button";
+import { DataTable, type DataTableColumn } from "../components/ui/DataTable";
+import { wasteListingApi } from "../api/wasteListingApi";
+import { transactionApi } from "../api/transactionApi";
+import type { WasteListingDto } from "../types/wasteListing";
+import type { TransactionDto } from "../types/transaction";
+import type { EscrowStatusString } from "../types/enums";
 
 // ── Stat Card ──────────────────────────────────────────────────────
 
@@ -59,45 +59,64 @@ function StatCard({ stat }: { stat: StatItem }) {
 
 // ── Escrow Status Mapping ──────────────────────────────────────────
 
-function getStatusBadge(escrowState: number) {
-  const map: Record<number, { label: string; variant: 'teal' | 'warning' | 'success' | 'info' | 'danger' }> = {
-    [EscrowStatus.AwaitingDeposit]: { label: 'Awaiting Deposit', variant: 'info' },
-    [EscrowStatus.FundsLocked]: { label: 'Funds Locked', variant: 'teal' },
-    [EscrowStatus.InTransit]: { label: 'In Transit', variant: 'teal' },
-    [EscrowStatus.InspectionPeriod]: { label: 'Inspection', variant: 'warning' },
-    [EscrowStatus.FundsReleased]: { label: 'Completed', variant: 'success' },
-    [EscrowStatus.Disputed]: { label: 'Disputed', variant: 'danger' },
+function getStatusBadge(escrowState: EscrowStatusString) {
+  const map: Record<
+    EscrowStatusString,
+    {
+      label: string;
+      variant: "teal" | "warning" | "success" | "info" | "danger";
+    }
+  > = {
+    AwaitingDeposit: {
+      label: "Awaiting Deposit",
+      variant: "info",
+    },
+    FundsLocked: { label: "Funds Locked", variant: "teal" },
+    InTransit: { label: "In Transit", variant: "teal" },
+    InspectionPeriod: {
+      label: "Inspection",
+      variant: "warning",
+    },
+    FundsReleased: { label: "Completed", variant: "success" },
+    Disputed: { label: "Disputed", variant: "danger" },
   };
-  const entry = map[escrowState] || { label: 'Unknown', variant: 'info' as const };
-  return <Badge variant={entry.variant} dot size="sm">{entry.label}</Badge>;
+  const entry = map[escrowState] || {
+    label: "Unknown",
+    variant: "info" as const,
+  };
+  return (
+    <Badge variant={entry.variant} dot size="sm">
+      {entry.label}
+    </Badge>
+  );
 }
 
 // ── Tab Type ───────────────────────────────────────────────────────
 
-type Tab = 'active' | 'past' | 'drafts';
+type Tab = "active" | "past" | "drafts";
 
 // ── Page Component ─────────────────────────────────────────────────
 
 export function FactoryDashboard() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<Tab>('active');
+  const [activeTab, setActiveTab] = useState<Tab>("active");
   const [transactions, setTransactions] = useState<TransactionDto[]>([]);
   const [listings, setListings] = useState<WasteListingDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
-    setError('');
+    setError("");
     try {
       const [txRes, listRes] = await Promise.allSettled([
         transactionApi.getAll(),
         wasteListingApi.getAll(),
       ]);
-      if (txRes.status === 'fulfilled') setTransactions(txRes.value);
-      if (listRes.status === 'fulfilled') setListings(listRes.value);
+      if (txRes.status === "fulfilled") setTransactions(txRes.value);
+      if (listRes.status === "fulfilled") setListings(listRes.value);
     } catch {
-      setError('Failed to load dashboard data. The backend may be offline.');
+      setError("Failed to load dashboard data. The backend may be offline.");
     } finally {
       setIsLoading(false);
     }
@@ -111,43 +130,48 @@ export function FactoryDashboard() {
   const stats: StatItem[] = [
     {
       icon: ListOrdered,
-      iconBg: 'bg-[#2dd4bf]/15 text-[#2dd4bf]',
-      label: 'Active Listings',
+      iconBg: "bg-[#2dd4bf]/15 text-[#2dd4bf]",
+      label: "Active Listings",
       value: listings.length || 0,
-      change: '+2%',
-      changeColor: 'text-[#2dd4bf]',
+      change: "+2%",
+      changeColor: "text-[#2dd4bf]",
     },
     {
       icon: Shield,
-      iconBg: 'bg-amber-500/15 text-amber-400',
-      label: 'Pending Escrow',
-      value: transactions.filter((t) => t.escrowState <= EscrowStatus.InTransit).length || 0,
-      change: '+1 pending',
-      changeColor: 'text-amber-400',
+      iconBg: "bg-amber-500/15 text-amber-400",
+      label: "Pending Escrow",
+      value:
+        transactions.filter((t) =>
+          ["AwaitingDeposit", "FundsLocked", "InTransit"].includes(
+            t.escrowState,
+          ),
+        ).length || 0,
+      change: "+1 pending",
+      changeColor: "text-amber-400",
     },
     {
       icon: Leaf,
-      iconBg: 'bg-emerald-500/15 text-emerald-400',
-      label: 'Total CO2 Saved',
-      value: '850 tons',
-      change: '+15%',
-      changeColor: 'text-emerald-400',
+      iconBg: "bg-emerald-500/15 text-emerald-400",
+      label: "Total CO2 Saved",
+      value: "850 tons",
+      change: "+15%",
+      changeColor: "text-emerald-400",
     },
     {
       icon: DollarSign,
-      iconBg: 'bg-[#2dd4bf]/15 text-[#2dd4bf]',
-      label: 'Cost Savings',
-      value: '$124k',
-      change: '+8%',
-      changeColor: 'text-[#2dd4bf]',
+      iconBg: "bg-[#2dd4bf]/15 text-[#2dd4bf]",
+      label: "Cost Savings",
+      value: "$124k",
+      change: "+8%",
+      changeColor: "text-[#2dd4bf]",
     },
   ];
 
   // ── Table Columns ──
   const columns: DataTableColumn<TransactionDto>[] = [
     {
-      key: 'listing',
-      header: 'Listing Name',
+      key: "listing",
+      header: "Listing Name",
       render: (row) => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-[#1a2e2e] flex items-center justify-center shrink-0">
@@ -163,23 +187,25 @@ export function FactoryDashboard() {
           </div>
         </div>
       ),
-      width: 'min-w-[200px]',
+      width: "min-w-[200px]",
     },
     {
-      key: 'buyer',
-      header: 'Buyer',
+      key: "buyer",
+      header: "Buyer",
       render: (row) => (
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-full bg-[#2dd4bf]/20 flex items-center justify-center text-[10px] font-bold text-[#2dd4bf]">
             {row.buyerId.slice(0, 2).toUpperCase()}
           </div>
-          <span className="text-sm text-gray-300 truncate">Buyer #{row.buyerId.slice(0, 6)}</span>
+          <span className="text-sm text-gray-300 truncate">
+            Buyer #{row.buyerId.slice(0, 6)}
+          </span>
         </div>
       ),
     },
     {
-      key: 'price',
-      header: 'Price',
+      key: "price",
+      header: "Price",
       render: (row) => (
         <span className="text-sm font-medium text-white">
           ${row.agreedPrice.toLocaleString()}
@@ -187,14 +213,14 @@ export function FactoryDashboard() {
       ),
     },
     {
-      key: 'status',
-      header: 'Status',
+      key: "status",
+      header: "Status",
       render: (row) => getStatusBadge(row.escrowState),
     },
     {
-      key: 'action',
-      header: 'Action',
-      headerAlign: 'center',
+      key: "action",
+      header: "Action",
+      headerAlign: "center",
       render: () => (
         <div className="flex justify-center">
           <button className="p-1.5 rounded-lg text-gray-500 hover:text-white hover:bg-[#1a2e2e] transition-colors">
@@ -207,9 +233,9 @@ export function FactoryDashboard() {
 
   // ── Tabs ──
   const tabs: { key: Tab; label: string }[] = [
-    { key: 'active', label: 'Active Deals' },
-    { key: 'past', label: 'Past Transactions' },
-    { key: 'drafts', label: 'Draft Listings' },
+    { key: "active", label: "Active Deals" },
+    { key: "past", label: "Past Transactions" },
+    { key: "drafts", label: "Draft Listings" },
   ];
 
   return (
@@ -250,8 +276,8 @@ export function FactoryDashboard() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   activeTab === tab.key
-                    ? 'text-[#2dd4bf] bg-[#2dd4bf]/10'
-                    : 'text-gray-400 hover:text-gray-200 hover:bg-[#1a2e2e]'
+                    ? "text-[#2dd4bf] bg-[#2dd4bf]/10"
+                    : "text-gray-400 hover:text-gray-200 hover:bg-[#1a2e2e]"
                 }`}
               >
                 {tab.label}
@@ -259,10 +285,18 @@ export function FactoryDashboard() {
             ))}
           </div>
           <div className="flex gap-2">
-            <Button variant="ghost" size="sm" leftIcon={<Filter className="w-3.5 h-3.5" />}>
+            <Button
+              variant="ghost"
+              size="sm"
+              leftIcon={<Filter className="w-3.5 h-3.5" />}
+            >
               Filter
             </Button>
-            <Button variant="ghost" size="sm" leftIcon={<Download className="w-3.5 h-3.5" />}>
+            <Button
+              variant="ghost"
+              size="sm"
+              leftIcon={<Download className="w-3.5 h-3.5" />}
+            >
               Export
             </Button>
           </div>
@@ -283,10 +317,17 @@ export function FactoryDashboard() {
         {/* Pagination hint */}
         {transactions.length > 0 && (
           <div className="px-5 py-3 border-t border-[#1e3a3a] flex items-center justify-between text-xs text-gray-500">
-            <span>Showing 1 to {transactions.length} of {transactions.length} results</span>
+            <span>
+              Showing 1 to {transactions.length} of {transactions.length}{" "}
+              results
+            </span>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled>Previous</Button>
-              <Button variant="outline" size="sm" disabled>Next</Button>
+              <Button variant="outline" size="sm" disabled>
+                Previous
+              </Button>
+              <Button variant="outline" size="sm" disabled>
+                Next
+              </Button>
             </div>
           </div>
         )}

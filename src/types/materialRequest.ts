@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════
 // Badil Platform — Material Request Domain Types
-// Source: OpenAPI 3.0.1 schemas: CreateMaterialRequestCommand, UpdateMaterialRequestCommand
-// Endpoints: /api/MaterialRequest (GET, POST), /api/MaterialRequest/{id} (GET, PUT, DELETE)
+// Source: Badil.Application Features/MaterialRequest DTOs & Commands
+// Endpoints: /api/MaterialRequest
 // ═══════════════════════════════════════════════════════════════════
 
 // ── Commands (Write) ───────────────────────────────────────────────
@@ -15,7 +15,7 @@ export interface CreateMaterialRequestCommand {
 
 /** PUT /api/MaterialRequest/{id} — update an existing request */
 export interface UpdateMaterialRequestCommand {
-  id: string; // uuid
+  id: string;
   materialType: string | null;
   targetQuantity: number;
   locationPreferenceRadiusKm: number;
@@ -23,18 +23,12 @@ export interface UpdateMaterialRequestCommand {
 
 // ── DTOs (Read) ────────────────────────────────────────────────────
 
-/**
- * GET /api/MaterialRequest & GET /api/MaterialRequest/{id}
- * Inferred response shape — includes requester + audit fields.
- */
+/** GET /api/MaterialRequest & GET /api/MaterialRequest/{id} */
 export interface MaterialRequestDto {
-  id: string; // uuid
-  requesterId: string; // uuid — the user who created the request
-  companyId: string; // uuid — the company requesting materials
+  id: string;
+  userId: string;
   materialType: string;
   targetQuantity: number;
   locationPreferenceRadiusKm: number;
-  isMatched: boolean;
-  createdAt: string; // ISO 8601
-  updatedAt: string; // ISO 8601
+  createdAt: string;
 }

@@ -1,43 +1,39 @@
 // ═══════════════════════════════════════════════════════════════════
 // Badil Platform — Transaction Domain Types
-// Source: OpenAPI 3.0.1 schemas: CreateTransactionCommand, UpdateTransactionCommand
-// Endpoints: /api/Transaction (GET, POST), /api/Transaction/{id} (GET, PUT, DELETE)
+// Source: Badil.Application Features/Transaction DTOs & Commands
+// Endpoints: /api/Transaction
 // ═══════════════════════════════════════════════════════════════════
 
-import type { EscrowStatus } from './enums';
+import type { EscrowStatusString } from "./enums";
 
 // ── Commands (Write) ───────────────────────────────────────────────
 
 /** POST /api/Transaction — initiate a new transaction */
 export interface CreateTransactionCommand {
-  listingId: string; // uuid
-  sellerId: string; // uuid
+  listingId: string;
+  sellerId: string;
   agreedPrice: number;
   isSampleRequest: boolean;
 }
 
 /** PUT /api/Transaction/{id} — update transaction state */
 export interface UpdateTransactionCommand {
-  id: string; // uuid
+  id: string;
   agreedPrice: number;
-  escrowState: EscrowStatus;
+  escrowState: EscrowStatusString;
   isSampleRequest: boolean;
 }
 
 // ── DTOs (Read) ────────────────────────────────────────────────────
 
-/**
- * GET /api/Transaction & GET /api/Transaction/{id}
- * Inferred response shape — includes buyer/seller + escrow state + audit fields.
- */
+/** GET /api/Transaction & GET /api/Transaction/{id} */
 export interface TransactionDto {
-  id: string; // uuid
-  listingId: string; // uuid
-  buyerId: string; // uuid
-  sellerId: string; // uuid
+  id: string;
+  listingId: string;
+  buyerId: string;
+  sellerId: string;
   agreedPrice: number;
-  escrowState: EscrowStatus;
+  escrowState: EscrowStatusString;
   isSampleRequest: boolean;
-  createdAt: string; // ISO 8601
-  updatedAt: string; // ISO 8601
+  createdAt: string;
 }

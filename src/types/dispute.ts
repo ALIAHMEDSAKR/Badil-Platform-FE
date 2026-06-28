@@ -1,40 +1,40 @@
 // ═══════════════════════════════════════════════════════════════════
 // Badil Platform — Dispute Ticket Domain Types
-// Source: OpenAPI 3.0.1 schemas: CreateDisputeTicketCommand, UpdateDisputeTicketCommand
-// Endpoints: /api/DisputeTicket (GET, POST), /api/DisputeTicket/{id} (GET, PUT, DELETE)
+// Source: Badil.Application Features/DisputeTicket DTOs & Commands
+// Endpoints: /api/DisputeTicket
 // ═══════════════════════════════════════════════════════════════════
 
-import type { DisputeStatus } from './enums';
+import type { DisputeStatusString } from "./enums";
 
 // ── Commands (Write) ───────────────────────────────────────────────
 
 /** POST /api/DisputeTicket — raise a dispute on a transaction */
 export interface CreateDisputeTicketCommand {
-  transactionId: string; // uuid
+  transactionId: string;
   reason: string | null;
 }
 
 /** PUT /api/DisputeTicket/{id} — admin: update dispute status/resolution */
 export interface UpdateDisputeTicketCommand {
-  id: string; // uuid
-  status: DisputeStatus;
+  id: string;
+  status: DisputeStatusString;
   adminResolutionRemarks: string | null;
+}
+
+/** POST /api/DisputeTicket/{id}/resolve — admin: resolve dispute */
+export interface ResolveDisputeTicketCommand {
+  remarks: string;
 }
 
 // ── DTOs (Read) ────────────────────────────────────────────────────
 
-/**
- * GET /api/DisputeTicket & GET /api/DisputeTicket/{id}
- * Inferred response shape — includes the raising user + admin resolution + audit fields.
- */
+/** GET /api/DisputeTicket & GET /api/DisputeTicket/{id} */
 export interface DisputeTicketDto {
-  id: string; // uuid
-  transactionId: string; // uuid
-  raisedByUserId: string; // uuid — who filed the dispute
+  id: string;
+  transactionId: string;
+  raisedByUserId: string;
   reason: string;
-  status: DisputeStatus;
+  status: DisputeStatusString;
   adminResolutionRemarks: string | null;
-  resolvedByAdminId: string | null; // uuid
-  createdAt: string; // ISO 8601
-  updatedAt: string; // ISO 8601
+  createdAt: string;
 }
