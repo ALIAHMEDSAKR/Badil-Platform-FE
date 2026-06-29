@@ -1,249 +1,168 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import { adminApi } from '../../api/adminApi';
-import { useAuth } from '../../context/AuthContext';
-import { UserRole } from '../../types/auth';
-import type { UserDto } from '../../types/auth';
-import {
-  UserPlus,
-  Trash2,
-  AlertCircle,
-  CheckCircle2,
-  RefreshCw,
-  Search,
-} from 'lucide-react';
+import { useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
+import { Search, UserPlus, Trash2, Shield, User as UserIcon, ShieldAlert } from 'lucide-react'
+import { useAuth } from '../../context/AuthContext'
+import { useUsers, useUpdateUserRole, useDeleteUser } from '../../hooks/admin/useUsers'
+import { UserRole } from '../../types/auth'
+import { LoadingState } from '../../components/admin/LoadingState'
+import { ErrorState } from '../../components/admin/ErrorState'
+import { EmptyState } from '../../components/admin/EmptyState'
 
 export function UserManagementPage() {
-  const { isSuperAdmin } = useAuth();
+  const { isSuperAdmin } = useAuth()
+  
+  const { data: users, isLoading, error, refetch } = useUsers()
+  const updateRoleMutation = useUpdateUserRole()
+  const deleteMutation = useDeleteUser()
 
-  const [users, setUsers] = useState<UserDto[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('')
 
-  const fetchUsers = useCallback(async () => {
-    setIsLoading(true);
-    setError('');
-    try {
-      const data = await adminApi.getAllUsers();
-      setUsers(data);
-    } catch {
-      setError('Failed to load users. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const filteredUsers = useMemo(() => {
+    if (!users) return []
+    if (!searchQuery.trim()) return users
 
-  useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
-
-  const handleRoleChange = async (userId: string, newRole: UserRole) => {
-    setUpdatingId(userId);
-    setError('');
-    setSuccessMsg('');
-    try {
-      await adminApi.updateUserRole(userId, newRole);
-      setUsers((prev) =>
-        prev.map((u) =>
-          u.id === userId
-            ? {
-                ...u,
-                role:
-                  newRole === UserRole.SuperAdmin
-                    ? 'SuperAdmin'
-                    : newRole === UserRole.Admin
-                    ? 'Admin'
-                    : 'User',
-              }
-            : u
-        )
-      );
-      setSuccessMsg('User role updated successfully.');
-      setTimeout(() => setSuccessMsg(''), 3000);
-    } catch (err: unknown) {
-      if (err && typeof err === 'object' && 'response' in err) {
-        const axiosErr = err as { response?: { data?: { message?: string } } };
-        setError(axiosErr.response?.data?.message || 'Failed to update role.');
-      } else {
-        setError('Network error. Please try again.');
-      }
-    } finally {
-      setUpdatingId(null);
-    }
-  };
-
-  const handleDelete = async (userId: string, userEmail: string) => {
-    if (!confirm(`Are you sure you want to delete ${userEmail}? This action cannot be undone.`)) {
-      return;
-    }
-
-    setDeletingId(userId);
-    setError('');
-    setSuccessMsg('');
-    try {
-      await adminApi.deleteUser(userId);
-      setUsers((prev) => prev.filter((u) => u.id !== userId));
-      setSuccessMsg(`User ${userEmail} has been deleted.`);
-      setTimeout(() => setSuccessMsg(''), 3000);
-    } catch (err: unknown) {
-      if (err && typeof err === 'object' && 'response' in err) {
-        const axiosErr = err as { response?: { data?: { message?: string } } };
-        setError(axiosErr.response?.data?.message || 'Failed to delete user.');
-      } else {
-        setError('Network error. Please try again.');
-      }
-    } finally {
-      setDeletingId(null);
-    }
-  };
+    const q = searchQuery.toLowerCase()
+    return users.filter(
+      (u) =>
+        u.email.toLowerCase().includes(q) ||
+        u.role.toLowerCase().includes(q) ||
+        u.id.toLowerCase().includes(q)
+    )
+  }, [users, searchQuery])
 
   const roleToEnum = (roleStr: string): UserRole => {
-    if (roleStr === 'SuperAdmin') return UserRole.SuperAdmin;
-    if (roleStr === 'Admin') return UserRole.Admin;
-    return UserRole.User;
-  };
+    if (roleStr === 'SuperAdmin') return UserRole.SuperAdmin
+    if (roleStr === 'Admin') return UserRole.Admin
+    return UserRole.User
+  }
 
-  const filteredUsers = users.filter(
-    (u) =>
-      u.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      u.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      u.id.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleDelete = (userId: string, userEmail: string) => {
+    if (confirm(`Are you sure you want to delete ${userEmail}? This action cannot be undone.`)) {
+      deleteMutation.mutate(userId)
+    }
+  }
 
   return (
     <>
-      <header className="admin-page-header">
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-7">
         <div>
-          <h1>User Management</h1>
-          <p className="admin-subtitle">
+          <h1 className="text-2xl font-bold text-[#e8f4f4] mb-1">
+            User Management
+          </h1>
+          <p className="text-sm text-[#6b9090]">
             View all users, update roles, and manage accounts across the platform.
           </p>
         </div>
-        <div className="admin-header-actions">
-          <button type="button" className="admin-btn" onClick={fetchUsers}>
-            <RefreshCw size={16} strokeWidth={2} aria-hidden />
-            Refresh
-          </button>
-          {isSuperAdmin && (
-            <Link to="/admin/create" className="admin-btn admin-btn--primary" style={{ textDecoration: 'none' }}>
-              <UserPlus size={16} strokeWidth={2} aria-hidden />
-              Create Admin
-            </Link>
-          )}
-        </div>
+        {isSuperAdmin && (
+          <Link
+            to="/admin/create"
+            className="flex items-center gap-2 px-4 py-2 bg-[#00c896] text-[#0f1a1a] rounded-lg font-semibold text-sm hover:bg-[#00a07a] transition-colors"
+          >
+            <UserPlus size={16} />
+            Create Admin
+          </Link>
+        )}
       </header>
 
-      {/* Messages */}
-      {error && (
-        <div className="admin-form-message admin-form-message--error" style={{ marginBottom: '1rem' }}>
-          <AlertCircle size={16} />
-          <span>{error}</span>
+      {/* ── Toolbar ────────────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center mb-6">
+        {/* Search */}
+        <div className="relative w-full sm:w-80">
+          <Search
+            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6b9090]"
+          />
+          <input
+            type="text"
+            placeholder="Search by email, role, or ID..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-[#132020] border border-[#1f3333] text-[#e8f4f4] text-sm rounded-lg pl-9 pr-4 py-2 focus:outline-none focus:border-[#00c896] focus:ring-1 focus:ring-[#00c896] transition-all"
+          />
         </div>
-      )}
-      {successMsg && (
-        <div className="admin-form-message admin-form-message--success" style={{ marginBottom: '1rem' }}>
-          <CheckCircle2 size={16} />
-          <span>{successMsg}</span>
-        </div>
-      )}
-
-      {/* Search */}
-      <div className="admin-search-bar">
-        <Search size={16} className="admin-search-icon" />
-        <input
-          type="text"
-          className="admin-search-input"
-          placeholder="Search by email, role, or ID..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
       </div>
 
-      {/* Users Table */}
-      <section className="admin-panel">
-        <div className="admin-panel__head">
-          <h2>All Users ({filteredUsers.length})</h2>
+      {/* ── Table ──────────────────────────────────────────────── */}
+      <section className="bg-[#132020] border border-[#1f3333] rounded-lg overflow-hidden">
+        <div className="px-5 py-4 border-b border-[#1f3333] flex justify-between items-center bg-[#0f1a1a]">
+          <h2 className="text-sm font-semibold text-[#e8f4f4]">All Users ({filteredUsers.length})</h2>
         </div>
-        <div className="admin-table-wrap">
+        
+        <div className="overflow-x-auto">
           {isLoading ? (
-            <div className="admin-loading-state">
-              <div className="admin-spinner" />
-              <p>Loading users...</p>
-            </div>
+            <LoadingState message="Loading users..." />
+          ) : error ? (
+            <ErrorState title="Failed to load users" onRetry={() => refetch()} />
           ) : filteredUsers.length === 0 ? (
-            <div className="admin-empty-state">
-              <p>
-                {searchQuery
-                  ? 'No users match your search.'
-                  : 'No users found.'}
-              </p>
-            </div>
+            <EmptyState 
+              title={searchQuery ? 'No users found' : 'No users available'} 
+              message={searchQuery ? 'Try adjusting your search criteria.' : 'There are no users registered in the system.'} 
+            />
           ) : (
-            <table className="admin-table">
+            <table className="w-full border-collapse text-sm">
               <thead>
-                <tr>
-                  <th>User ID</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Actions</th>
+                <tr className="bg-[#0f1a1a] border-b border-[#1f3333]">
+                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-[#6b9090] uppercase tracking-wider">User</th>
+                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-[#6b9090] uppercase tracking-wider">Role</th>
+                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-[#6b9090] uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredUsers.map((user) => (
-                  <tr key={user.id}>
-                    <td>
-                      <p className="admin-cell-sub" style={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
-                        {user.id.substring(0, 8)}...
-                      </p>
-                    </td>
-                    <td>
-                      <p className="admin-cell-title">{user.email}</p>
-                    </td>
-                    <td>
-                      <select
-                        className="admin-role-select"
-                        value={roleToEnum(user.role)}
-                        onChange={(e) =>
-                          handleRoleChange(user.id, Number(e.target.value) as UserRole)
-                        }
-                        disabled={updatingId === user.id}
-                      >
-                        <option value={UserRole.User}>User</option>
-                        <option value={UserRole.Admin}>Admin</option>
-                        {isSuperAdmin && (
-                          <option value={UserRole.SuperAdmin}>SuperAdmin</option>
-                        )}
-                      </select>
-                    </td>
-                    <td>
-                      <div className="admin-actions-row">
-                        <button
-                          type="button"
-                          className="admin-icon-btn admin-icon-btn--danger"
-                          title="Delete user"
-                          aria-label={`Delete ${user.email}`}
-                          onClick={() => handleDelete(user.id, user.email)}
-                          disabled={deletingId === user.id}
+                {filteredUsers.map((user) => {
+                  const isUpdating = updateRoleMutation.isPending && updateRoleMutation.variables?.userId === user.id
+                  const isDeleting = deleteMutation.isPending && deleteMutation.variables === user.id
+                  
+                  return (
+                    <tr key={user.id} className="border-b border-[#1f3333] hover:bg-[#1a2a2a] transition-colors">
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-[#1f3333] flex items-center justify-center flex-shrink-0 text-[#6b9090]">
+                            {user.role === 'SuperAdmin' ? <ShieldAlert size={14} /> : user.role === 'Admin' ? <Shield size={14} /> : <UserIcon size={14} />}
+                          </div>
+                          <div>
+                            <div className="font-medium text-[#e8f4f4]">{user.email}</div>
+                            <div className="text-xs text-[#6b9090] font-mono mt-0.5">ID: {user.id.substring(0, 13)}...</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-5 py-4">
+                        <select
+                          className="bg-[#0f1a1a] border border-[#1f3333] text-[#e8f4f4] text-xs rounded px-2 py-1.5 focus:outline-none focus:border-[#00c896] disabled:opacity-50"
+                          value={roleToEnum(user.role)}
+                          onChange={(e) =>
+                            updateRoleMutation.mutate({ userId: user.id, newRole: Number(e.target.value) as UserRole })
+                          }
+                          disabled={isUpdating || (!isSuperAdmin && user.role === 'SuperAdmin')}
                         >
-                          {deletingId === user.id ? (
-                            <div className="admin-spinner-sm" />
-                          ) : (
-                            <Trash2 size={16} strokeWidth={2} />
+                          <option value={UserRole.User}>User</option>
+                          <option value={UserRole.Admin}>Admin</option>
+                          {isSuperAdmin && (
+                            <option value={UserRole.SuperAdmin}>SuperAdmin</option>
                           )}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                        </select>
+                      </td>
+                      <td className="px-5 py-4">
+                        <div className="flex items-center justify-end">
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(user.id, user.email)}
+                            disabled={isDeleting || (!isSuperAdmin && user.role === 'SuperAdmin')}
+                            className="p-1.5 rounded-md text-[#6b9090] hover:bg-[#2a0a0a] hover:text-[#ef4444] transition-colors disabled:opacity-50"
+                            title="Delete user"
+                            aria-label="Delete User"
+                          >
+                            <Trash2 size={18} aria-hidden="true" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           )}
         </div>
       </section>
     </>
-  );
+  )
 }

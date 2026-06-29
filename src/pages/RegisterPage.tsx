@@ -61,8 +61,11 @@ export function RegisterPage() {
       });
     } catch (err: unknown) {
       if (err && typeof err === 'object' && 'response' in err) {
-        const axiosErr = err as { response?: { data?: { message?: string }; status?: number } };
-        if (axiosErr.response?.data?.message) {
+        const axiosErr = err as { response?: { data?: { message?: string, errors?: Record<string, string[]> }; status?: number } };
+        if (axiosErr.response?.data?.errors) {
+          const firstErrorKey = Object.keys(axiosErr.response.data.errors)[0];
+          setError(axiosErr.response.data.errors[firstErrorKey][0]);
+        } else if (axiosErr.response?.data?.message) {
           setError(axiosErr.response.data.message);
         } else {
           setError('Something went wrong. Please try again.');

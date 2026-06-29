@@ -2,7 +2,9 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { AdminLayout } from './admin/AdminLayout'
 import { OverviewPage } from './admin/pages/OverviewPage'
 import { VerificationsPage } from './admin/pages/VerificationsPage'
+import { VerificationDetailPage } from './admin/pages/VerificationDetailPage'
 import { DisputesPage } from './admin/pages/DisputesPage'
+import { DisputeDetailPage } from './admin/pages/DisputeDetailPage'
 import { UserManagementPage } from './admin/pages/UserManagementPage'
 import { AnalyticsPage } from './admin/pages/AnalyticsPage'
 import { SettingsPage } from './admin/pages/SettingsPage'
@@ -78,7 +80,9 @@ export default function App() {
         <Route index element={<OverviewPage />} />
         <Route path="dashboard" element={<Navigate to="/admin" replace />} />
         <Route path="verifications" element={<VerificationsPage />} />
+        <Route path="verifications/:id" element={<VerificationDetailPage />} />
         <Route path="disputes" element={<DisputesPage />} />
+        <Route path="disputes/:id" element={<DisputeDetailPage />} />
         <Route path="users" element={<UserManagementPage />} />
         <Route
           path="create"
