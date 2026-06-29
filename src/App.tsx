@@ -22,6 +22,13 @@ import { FactoryDashboard } from './pages/FactoryDashboard'
 import { Marketplace } from './pages/Marketplace'
 import { LoginPage } from './pages/LoginPage'
 
+// Real implementations for newly built pages
+import { MyListings } from './pages/MyListings'
+import { NewListing } from './pages/NewListing'
+import { Analytics } from './pages/Analytics'
+import { Escrow } from './pages/Escrow'
+import { Settings } from './pages/Settings'
+
 // Inline placeholder for new layout routes that aren't built yet
 const ComingSoon = ({ title }: { title: string }) => (
   <div className="flex flex-col items-center justify-center h-full p-8 text-center text-gray-400">
@@ -60,11 +67,12 @@ export default function App() {
         <Route index element={<FactoryDashboard />} />
         <Route path="marketplace" element={<Marketplace />} />
         <Route path="marketplace/:id" element={<ComingSoon title="Listing Details" />} />
-        <Route path="listings" element={<ComingSoon title="My Listings" />} />
-        <Route path="listings/new" element={<ComingSoon title="New Listing" />} />
-        <Route path="analytics" element={<ComingSoon title="Analytics" />} />
-        <Route path="escrow" element={<ComingSoon title="Escrow" />} />
-        <Route path="settings" element={<ComingSoon title="Settings" />} />
+        <Route path="listings" element={<MyListings />} />
+        <Route path="listings/new" element={<NewListing />} />
+        <Route path="listings/edit/:id" element={<NewListing />} />
+        <Route path="analytics" element={<Analytics />} />
+        <Route path="escrow" element={<Escrow />} />
+        <Route path="settings" element={<Settings />} />
         <Route path="support" element={<ComingSoon title="Support" />} />
       </Route>
 
