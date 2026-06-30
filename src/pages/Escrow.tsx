@@ -140,11 +140,11 @@ export function Escrow() {
   };
 
   return (
-    <div>
+    <div className="animate-fade-up">
       {/* Header */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Escrow Deals</h1>
+          <h1 className="text-2xl font-bold text-white dashboard-title">Escrow Deals</h1>
           <p className="text-sm text-gray-400 mt-1">
             Secure, milestone-based payments with automated verification.
           </p>
@@ -168,7 +168,7 @@ export function Escrow() {
           </Button>
         </div>
       ) : transactions.length === 0 ? (
-        <div className="text-center py-20 bg-[#0d1f1f]/20 border border-[#1e3a3a] rounded-xl">
+        <div className="text-center py-20 bg-black/10 border border-[var(--border)] rounded-xl">
           <Shield className="w-16 h-16 text-gray-700 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-300">No Escrow Transactions Yet</h3>
           <p className="text-sm text-gray-500 max-w-md mx-auto mt-2">
@@ -184,9 +184,9 @@ export function Escrow() {
             const stateInfo = statusMap[tx.escrowState] || { label: tx.escrowState, colorClass: "text-gray-400 bg-gray-800/30", stepIdx: 1 };
 
             return (
-              <Card key={tx.id} noPadding className="overflow-hidden">
+              <Card key={tx.id} noPadding className="dashboard-card overflow-hidden">
                 {/* Top header strip */}
-                <div className="px-5 py-4 bg-[#0d1f1f] border-b border-[#1e3a3a] flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div className="px-5 py-4 bg-black/10 border-b border-[var(--border)] flex flex-col md:flex-row md:items-center justify-between gap-3">
                   <div className="flex flex-wrap items-center gap-3">
                     <span className="text-xs text-gray-500">
                       CONTRACT: <strong className="text-gray-300 font-mono">#{tx.id.toUpperCase().slice(0, 8)}</strong>
@@ -216,7 +216,7 @@ export function Escrow() {
                 <div className="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
                   {/* Material listing summary */}
                   <div className="lg:col-span-5 flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-xl bg-[#1a2e2e] flex items-center justify-center shrink-0 border border-[#2a4a4a]">
+                    <div className="w-16 h-16 rounded-xl bg-black/20 flex items-center justify-center shrink-0 border border-[var(--border)]">
                       {listing?.imageUrls?.[0] ? (
                         <img src={listing.imageUrls[0]} alt="Listing" className="w-full h-full object-cover rounded-xl" />
                       ) : (
@@ -246,7 +246,7 @@ export function Escrow() {
                   <div className="lg:col-span-7 flex flex-col justify-center">
                     <div className="relative flex items-center justify-between w-full">
                       {/* Line connector background */}
-                      <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-[#122d2d] z-0" />
+                      <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-black/40 z-0" />
                       <div
                         className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-[#2dd4bf] z-0 transition-all duration-300"
                         style={{
@@ -259,7 +259,7 @@ export function Escrow() {
                         <div
                           className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-bold transition-colors ${stateInfo.stepIdx >= 1
                               ? "bg-[#2dd4bf] text-[#0b1a1a] border-[#2dd4bf]"
-                              : "bg-[#0f2424] text-gray-500 border-[#2a4a4a]"
+                              : "bg-[#0a1414] text-gray-500 border-[var(--border)]"
                             }`}
                         >
                           1
@@ -272,7 +272,7 @@ export function Escrow() {
                         <div
                           className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-bold transition-colors ${stateInfo.stepIdx >= 2
                               ? "bg-[#2dd4bf] text-[#0b1a1a] border-[#2dd4bf]"
-                              : "bg-[#0f2424] text-gray-500 border-[#2a4a4a]"
+                              : "bg-[#0a1414] text-gray-500 border-[var(--border)]"
                             }`}
                         >
                           2
@@ -285,7 +285,7 @@ export function Escrow() {
                         <div
                           className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-bold transition-colors ${stateInfo.stepIdx >= 3
                               ? "bg-[#2dd4bf] text-[#0b1a1a] border-[#2dd4bf]"
-                              : "bg-[#0f2424] text-gray-500 border-[#2a4a4a]"
+                              : "bg-[#0a1414] text-gray-500 border-[var(--border)]"
                             }`}
                         >
                           3
@@ -298,7 +298,7 @@ export function Escrow() {
                         <div
                           className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-bold transition-colors ${stateInfo.stepIdx >= 4
                               ? "bg-emerald-500 text-[#0b1a1a] border-emerald-500"
-                              : "bg-[#0f2424] text-gray-500 border-[#2a4a4a]"
+                              : "bg-[#0a1414] text-gray-500 border-[var(--border)]"
                             }`}
                         >
                           ✓
@@ -310,7 +310,7 @@ export function Escrow() {
                 </div>
 
                 {/* Bottom action panel */}
-                <div className="px-5 py-3.5 bg-[#0e2222]/40 border-t border-[#1e3a3a] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="px-5 py-3.5 bg-black/10 border-t border-[var(--border)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-2 text-xs text-gray-400">
                     <Clock className="w-3.5 h-3.5" />
                     <span>
@@ -332,6 +332,7 @@ export function Escrow() {
                         size="sm"
                         leftIcon={<DollarSign className="w-3.5 h-3.5" />}
                         isLoading={actionLoadingId === tx.id}
+                        className="btn-primary-gradient"
                         onClick={() => handleLockFunds(tx.id)}
                       >
                         Lock & Secure Funds
@@ -345,6 +346,7 @@ export function Escrow() {
                         size="sm"
                         leftIcon={<Truck className="w-3.5 h-3.5" />}
                         isLoading={actionLoadingId === tx.id}
+                        className="btn-primary-gradient"
                         onClick={() => handleConfirmShipment(tx.id)}
                       >
                         Confirm Dispatch & Ship
@@ -358,6 +360,7 @@ export function Escrow() {
                         size="sm"
                         leftIcon={<CheckCircle className="w-3.5 h-3.5" />}
                         isLoading={actionLoadingId === tx.id}
+                        className="btn-primary-gradient"
                         onClick={() => handleReleaseFunds(tx.id)}
                       >
                         Release Payment

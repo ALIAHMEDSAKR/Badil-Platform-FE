@@ -67,7 +67,7 @@ export default function App() {
       >
         <Route index element={<FactoryDashboard />} />
         <Route path="marketplace" element={<Marketplace />} />
-        <Route path="marketplace/:id" element={<ComingSoon title="Listing Details" />} />
+        <Route path="marketplace/:id" element={<ListingDetailPage />} />
         <Route path="listings" element={<MyListings />} />
         <Route path="listings/new" element={<NewListing />} />
         <Route path="listings/edit/:id" element={<NewListing />} />

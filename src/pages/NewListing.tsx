@@ -153,7 +153,7 @@ export function NewListing() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto animate-fade-up">
       {/* Back CTA */}
       <button
         onClick={() => navigate("/app/listings")}
@@ -165,7 +165,7 @@ export function NewListing() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">
+        <h1 className="text-2xl font-bold text-white dashboard-title">
           {isEditMode ? "Edit Waste Listing" : "Create Waste Listing"}
         </h1>
         <p className="text-sm text-gray-400 mt-1">
@@ -184,7 +184,7 @@ export function NewListing() {
       )}
 
       {/* Form Card */}
-      <Card>
+      <Card className="dashboard-card">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Material Type */}
@@ -242,7 +242,7 @@ export function NewListing() {
               placeholder="Provide specifications, impurities list, frequency of availability, loading support, etc."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded-lg border bg-[#0f2424] text-gray-200 border-[#2a4a4a] hover:border-[#3a5a5a] focus:outline-none focus:ring-2 focus:ring-[#2dd4bf]/40 focus:border-[#2dd4bf]/60 p-4 h-32 resize-none transition-all duration-200"
+              className="w-full rounded-lg border bg-black/20 text-gray-200 border-[var(--border)] hover:border-[#2dd4bf]/40 focus:outline-none focus:ring-2 focus:ring-[#2dd4bf]/40 focus:border-[#2dd4bf]/60 p-4 h-32 resize-none transition-all duration-200"
             />
           </div>
 
@@ -250,7 +250,7 @@ export function NewListing() {
           <div>
             <label className="text-sm font-medium text-gray-300 block mb-2">Listing Image</label>
             {previewUrl ? (
-              <div className="relative w-full max-w-sm h-48 border border-[#1e3a3a] rounded-lg overflow-hidden bg-[#1a2e2e]">
+              <div className="relative w-full max-w-sm h-48 border border-[var(--border)] rounded-lg overflow-hidden bg-black/20">
                 <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
                 <button
                   type="button"
@@ -261,7 +261,7 @@ export function NewListing() {
                 </button>
               </div>
             ) : (
-              <div className="border border-dashed border-[#2a4a4a] hover:border-[#2dd4bf]/40 rounded-xl p-8 flex flex-col items-center justify-center bg-[#0d1f1f]/50 transition-colors">
+              <div className="border border-dashed border-[var(--border)] hover:border-[#2dd4bf]/40 rounded-xl p-8 flex flex-col items-center justify-center bg-black/20 transition-colors relative">
                 <Upload className="w-8 h-8 text-gray-500 mb-3" />
                 <p className="text-sm text-gray-300 font-medium">Click to upload a listing photo</p>
                 <p className="text-xs text-gray-500 mt-1">PNG, JPG, JPEG up to 10MB</p>
@@ -269,24 +269,15 @@ export function NewListing() {
                   type="file"
                   accept="image/*"
                   onChange={handleFileChange}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer hidden"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   id="image-file-input"
                 />
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  className="mt-4"
-                  onClick={() => document.getElementById("image-file-input")?.click()}
-                >
-                  Select File
-                </Button>
               </div>
             )}
           </div>
 
           {/* Form Actions */}
-          <div className="pt-4 border-t border-[#1e3a3a] flex items-center justify-end gap-3">
+          <div className="pt-4 border-t border-[var(--border)] flex items-center justify-end gap-3">
             <Button
               type="button"
               variant="ghost"
@@ -300,6 +291,7 @@ export function NewListing() {
               variant="primary"
               leftIcon={<Save className="w-4 h-4" />}
               isLoading={isLoading}
+              className="btn-primary-gradient"
             >
               {isEditMode ? "Save Changes" : "Create Listing"}
             </Button>

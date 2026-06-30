@@ -26,13 +26,13 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    'bg-[#2dd4bf] hover:bg-[#14b8a6] active:bg-[#0d9488] text-[#0b1a1a] font-semibold shadow-lg shadow-teal-500/20',
+    'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] active:bg-[var(--color-primary-active)] text-[var(--color-primary-dark)] font-semibold shadow-lg shadow-teal-500/20',
   secondary:
-    'bg-[#1a2e2e] hover:bg-[#243b3b] active:bg-[#2d4a4a] text-gray-200 border border-[#2a4a4a]',
+    'bg-[var(--color-bg)] hover:bg-[var(--color-surface)] active:bg-[var(--color-surface-dark)] text-gray-200 border border-[var(--color-border)]',
   outline:
-    'bg-transparent hover:bg-[#1a2e2e] active:bg-[#243b3b] text-[#2dd4bf] border border-[#2dd4bf]/40 hover:border-[#2dd4bf]/70',
+    'bg-transparent hover:bg-[var(--color-bg)] active:bg-[var(--color-surface)] text-[var(--color-primary)] border border-[var(--color-primary)]/40 hover:border-[var(--color-primary)]/70',
   ghost:
-    'bg-transparent hover:bg-[#1a2e2e] active:bg-[#243b3b] text-gray-300 hover:text-white',
+    'bg-transparent hover:bg-[var(--color-bg)] active:bg-[var(--color-surface)] text-gray-300 hover:text-white',
   danger:
     'bg-red-600/20 hover:bg-red-600/30 active:bg-red-600/40 text-red-400 border border-red-500/30',
 };

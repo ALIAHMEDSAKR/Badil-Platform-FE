@@ -22,12 +22,9 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const variantStyles: Record<CardVariant, string> = {
-  default:
-    'bg-[#0f2424] border border-[#1e3a3a] rounded-xl',
-  stat:
-    'bg-[#0f2424] border border-[#1e3a3a] rounded-xl hover:border-[#2dd4bf]/30 transition-colors duration-200',
-  interactive:
-    'bg-[#0f2424] border border-[#1e3a3a] rounded-xl hover:border-[#2dd4bf]/40 hover:shadow-lg hover:shadow-teal-900/20 transition-all duration-200 cursor-pointer',
+  default: 'bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl backdrop-blur-md',
+  stat: 'bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl hover:border-[var(--color-primary)]/30 transition-all duration-300 hover:shadow-lg hover:shadow-teal-900/10 backdrop-blur-md',
+  interactive: 'bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-teal-900/20 transition-all duration-300 cursor-pointer backdrop-blur-md',
 };
 
 // ── Component ──────────────────────────────────────────────────────
@@ -42,7 +39,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       >
         {/* Header */}
         {header && (
-          <div className="px-5 py-4 border-b border-[#1e3a3a]">
+          <div className="px-5 py-4 border-b border-[var(--color-border)]">
             {header}
           </div>
         )}
@@ -54,7 +51,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
 
         {/* Footer */}
         {footer && (
-          <div className="px-5 py-3 border-t border-[#1e3a3a]">
+          <div className="px-5 py-3 border-t border-[var(--color-border)]">
             {footer}
           </div>
         )}

@@ -24,6 +24,7 @@ import {
 import { useAuthStore } from '../../store/authStore';
 import { cn } from '../../utils/cn';
 import { Button } from '../ui/Button';
+import '../../styles/dashboard-theme.css';
 
 // ── Navigation Items ───────────────────────────────────────────────
 
@@ -90,7 +91,7 @@ export function DashboardLayout() {
   const closeMobile = () => setSidebarOpen(false);
 
   return (
-    <div className="min-h-screen bg-[#0b1a1a] flex">
+    <div className="app-dashboard-container flex">
       {/* ── Mobile Overlay ── */}
       {sidebarOpen && (
         <div
@@ -103,16 +104,16 @@ export function DashboardLayout() {
       <aside
         className={cn(
           'fixed lg:static inset-y-0 left-0 z-50 w-60 flex flex-col',
-          'bg-[#0d1f1f] border-r border-[#1e3a3a]',
+          'dashboard-sidebar',
           'transform transition-transform duration-200 lg:transform-none',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         )}
       >
         {/* Company header */}
-        <div className="px-5 py-5 border-b border-[#1e3a3a]">
+        <div className="px-5 py-5 border-b border-[var(--border)]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-[#2dd4bf]/20 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-lg bg-[#2dd4bf]/20 flex items-center justify-center stat-icon-glow text-[#2dd4bf]">
                 <div className="w-5 h-5 rounded bg-[#2dd4bf]" />
               </div>
               <div>
@@ -139,7 +140,7 @@ export function DashboardLayout() {
         </nav>
 
         {/* Bottom nav */}
-        <div className="px-3 pb-3 space-y-1 border-t border-[#1e3a3a] pt-3">
+        <div className="px-3 pb-3 space-y-1 border-t border-[var(--border)] pt-3">
           {bottomNavItems.map((item) => (
             <SidebarLink key={item.to} {...item} onClick={closeMobile} />
           ))}
@@ -156,7 +157,7 @@ export function DashboardLayout() {
       {/* ── Main Content ── */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
-        <header className="h-16 border-b border-[#1e3a3a] flex items-center justify-between px-6 bg-[#0d1f1f]/80 backdrop-blur-sm sticky top-0 z-30">
+        <header className="h-16 flex items-center justify-between px-6 dashboard-header sticky top-0 z-30">
           <div className="flex items-center gap-4">
             <button
               className="lg:hidden p-2 text-gray-400 hover:text-white rounded-lg hover:bg-[#1a2e2e]"
@@ -166,7 +167,7 @@ export function DashboardLayout() {
             </button>
 
             {/* Search */}
-            <div className="hidden sm:flex items-center gap-2 bg-[#0f2424] border border-[#1e3a3a] rounded-lg px-3 py-2 w-72">
+            <div className="hidden sm:flex items-center gap-2 dashboard-search rounded-lg px-3 py-2 w-72">
               <Search className="w-4 h-4 text-gray-500 shrink-0" />
               <input
                 type="text"
@@ -180,7 +181,7 @@ export function DashboardLayout() {
             {/* Notification bell */}
             <button className="relative p-2 text-gray-400 hover:text-white rounded-lg hover:bg-[#1a2e2e] transition-colors">
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#2dd4bf] rounded-full" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#2dd4bf] rounded-full animate-pulse" />
             </button>
 
             {/* New Listing CTA */}
@@ -188,6 +189,7 @@ export function DashboardLayout() {
               variant="primary"
               size="sm"
               leftIcon={<Plus className="w-4 h-4" />}
+              className="btn-primary-gradient"
               onClick={() => navigate('/app/listings/new')}
             >
               New Listing

@@ -1,0 +1,29 @@
+:root {
+  /* Primary teal accent */
+  --color-primary: #2dd4bf;
+  --color-primary-hover: #14b8a6;
+  --color-primary-active: #0d9488;
+  --color-primary-dark: #0b1a1a;
+
+  /* Backgrounds */
+  --color-bg: #050d0d;
+  --color-surface: rgba(15, 30, 30, 0.65);
+  --color-surface-dark: rgba(10, 20, 20, 0.85);
+  --color-border: rgba(79, 209, 197, 0.12);
+  --color-border-hover: #2dd4bf;
+
+  /* Text */
+  --color-text: #cbd5e1; /* gray-300 */
+  --color-text-muted: #6b7280; /* gray-500 */
+  --color-heading: #ffffff;
+
+  /* Shadows */
+  --shadow-sm: rgba(0,0,0,0.25) 0 2px 4px -1px;
+  --shadow-md: rgba(0,0,0,0.4) 0 4px 6px -1px;
+  --shadow-lg: rgba(0,0,0,0.5) 0 10px 15px -3px;
+
+  /* Font */
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+

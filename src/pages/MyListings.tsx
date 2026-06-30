@@ -39,9 +39,9 @@ interface StatItem {
 function StatCard({ stat }: { stat: StatItem }) {
   const Icon = stat.icon;
   return (
-    <Card variant="stat">
+    <Card variant="stat" className="dashboard-card">
       <div className="flex items-center gap-4">
-        <div className={`p-3 rounded-lg ${stat.iconBg}`}>
+        <div className={`p-3 rounded-lg stat-icon-glow ${stat.iconBg}`}>
           <Icon className="w-5 h-5" />
         </div>
         <div>
@@ -260,16 +260,17 @@ export function MyListings() {
   ];
 
   return (
-    <div>
+    <div className="animate-fade-up">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">My Listings</h1>
+          <h1 className="text-2xl font-bold text-white dashboard-title">My Listings</h1>
           <p className="text-sm text-gray-400 mt-1">Manage and track your company's waste materials.</p>
         </div>
         <Button
           variant="primary"
           leftIcon={<Plus className="w-4 h-4" />}
+          className="btn-primary-gradient"
           onClick={() => navigate("/app/listings/new")}
         >
           New Listing
@@ -294,10 +295,10 @@ export function MyListings() {
       )}
 
       {/* Search & Table list */}
-      <Card noPadding>
+      <Card noPadding className="dashboard-card">
         {/* Toolbar */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between px-5 pt-5 pb-0 gap-4">
-          <div className="flex-1 flex items-center gap-2 bg-[#0f2424] border border-[#1e3a3a] rounded-lg px-3 py-2 w-full md:max-w-md">
+          <div className="flex-1 flex items-center gap-2 dashboard-search rounded-lg px-3 py-2 w-full md:max-w-md">
             <Search className="w-4 h-4 text-gray-500 shrink-0" />
             <input
               type="text"
@@ -326,7 +327,7 @@ export function MyListings() {
         </div>
 
         {/* Table list */}
-        <div className="mt-4">
+        <div className="mt-4 px-5 pb-2 dashboard-table-wrap">
           <DataTable
             columns={columns}
             data={filteredListings}

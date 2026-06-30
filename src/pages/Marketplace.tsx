@@ -115,10 +115,10 @@ function ListingCard({
   return (
     <div
       onClick={onClick}
-      className="group bg-[#0f2424] border border-[#1e3a3a] rounded-xl overflow-hidden hover:border-[#2dd4bf]/30 hover:shadow-lg hover:shadow-teal-900/10 transition-all duration-200 cursor-pointer"
+      className="group dashboard-card rounded-xl overflow-hidden cursor-pointer"
     >
       {/* Image area */}
-      <div className="relative h-44 bg-[#1a2e2e] overflow-hidden">
+      <div className="relative h-44 bg-black/20 overflow-hidden">
         {listing.imageUrls?.[0] ? (
           <img
             src={listing.imageUrls[0]}
@@ -176,31 +176,31 @@ function ListingCard({
 
         {/* Quantity + Price */}
         <div className="flex gap-3 mb-3">
-          <div className="flex-1 bg-[#0b1a1a] rounded-lg px-3 py-2">
+          <div className="flex-1 bg-black/25 rounded-lg px-3 py-2">
             <p className="text-[10px] uppercase text-gray-500 font-medium tracking-wider">
               Quantity
             </p>
-            <p className="text-sm font-semibold text-white">
+            <p className="text-sm font-semibold text-white mt-0.5">
               {listing.quantity}
             </p>
           </div>
-          <div className="flex-1 bg-[#0b1a1a] rounded-lg px-3 py-2">
+          <div className="flex-1 bg-black/25 rounded-lg px-3 py-2">
             <div className="flex items-center gap-1">
               <Sparkles className="w-3 h-3 text-[#2dd4bf]" />
               <p className="text-[10px] uppercase text-gray-500 font-medium tracking-wider">
                 Est. Price
               </p>
             </div>
-            <p className="text-sm font-semibold text-white">
+            <p className="text-sm font-semibold text-white mt-0.5">
               ${listing.suggestedPrice?.toLocaleString() || "Negotiable"}
             </p>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-3 border-t border-[#1e3a3a]">
+        <div className="flex items-center justify-between pt-3 border-t border-[var(--border)]">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-[#1a2e2e] flex items-center justify-center">
+            <div className="w-6 h-6 rounded-full bg-black/20 flex items-center justify-center border border-[var(--border)]">
               <span className="text-[9px] font-bold text-gray-400">
                 {listing.userId?.slice(0, 2).toUpperCase() || "CO"}
               </span>
@@ -277,10 +277,10 @@ export function Marketplace() {
   }, [listings, searchQuery, activeCategory]);
 
   return (
-    <div>
+    <div className="animate-fade-up">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Marketplace Discovery</h1>
+        <h1 className="text-2xl font-bold text-white dashboard-title">Marketplace Discovery</h1>
         <p className="text-sm text-gray-400 mt-1">
           Find valuable resources from industrial partners near you.
         </p>
@@ -289,7 +289,7 @@ export function Marketplace() {
       {/* Search + Controls */}
       <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-6">
         {/* Search bar */}
-        <div className="flex-1 flex items-center gap-2 bg-[#0f2424] border border-[#1e3a3a] rounded-lg px-4 py-2.5 w-full md:max-w-xl">
+        <div className="flex-1 flex items-center gap-2 dashboard-search rounded-lg px-4 py-2.5 w-full md:max-w-xl">
           <Search className="w-4 h-4 text-gray-500 shrink-0" />
           <input
             type="text"
@@ -305,7 +305,7 @@ export function Marketplace() {
 
         {/* View toggle */}
         <div className="flex items-center gap-2">
-          <div className="flex bg-[#0f2424] border border-[#1e3a3a] rounded-lg p-0.5">
+          <div className="flex bg-black/25 border border-[var(--border)] rounded-lg p-0.5">
             <button
               onClick={() => setViewMode("list")}
               className={cn(

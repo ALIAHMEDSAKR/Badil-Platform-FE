@@ -41,9 +41,9 @@ interface StatItem {
 function StatCard({ stat }: { stat: StatItem }) {
   const Icon = stat.icon;
   return (
-    <Card variant="stat">
+    <Card variant="stat" className="dashboard-card">
       <div className="flex items-start justify-between">
-        <div className={`p-2.5 rounded-lg ${stat.iconBg}`}>
+        <div className={`p-2.5 rounded-lg stat-icon-glow ${stat.iconBg}`}>
           <Icon className="w-5 h-5" />
         </div>
         <span className={`text-xs font-semibold ${stat.changeColor}`}>
@@ -52,7 +52,7 @@ function StatCard({ stat }: { stat: StatItem }) {
         </span>
       </div>
       <p className="mt-4 text-sm text-gray-400">{stat.label}</p>
-      <p className="text-2xl font-bold text-white">{stat.value}</p>
+      <p className="text-2xl font-bold text-white mt-1">{stat.value}</p>
     </Card>
   );
 }
@@ -239,10 +239,10 @@ export function FactoryDashboard() {
   ];
 
   return (
-    <div>
+    <div className="animate-fade-up">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">Factory Dashboard</h1>
+        <h1 className="text-2xl font-bold text-white dashboard-title">Factory Dashboard</h1>
         <p className="text-sm text-gray-400 mt-1">
           Overview of waste-to-resource operations
         </p>
@@ -266,7 +266,7 @@ export function FactoryDashboard() {
       )}
 
       {/* Deals Section */}
-      <Card noPadding>
+      <Card noPadding className="dashboard-card">
         {/* Tabs + Actions */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-5 pt-5 pb-0 gap-4">
           <div className="flex gap-1">
@@ -303,7 +303,7 @@ export function FactoryDashboard() {
         </div>
 
         {/* Table */}
-        <div className="mt-4">
+        <div className="mt-4 px-5 pb-2 dashboard-table-wrap">
           <DataTable
             columns={columns}
             data={transactions}
@@ -316,7 +316,7 @@ export function FactoryDashboard() {
 
         {/* Pagination hint */}
         {transactions.length > 0 && (
-          <div className="px-5 py-3 border-t border-[#1e3a3a] flex items-center justify-between text-xs text-gray-500">
+          <div className="px-5 py-3 border-t border-[var(--border)] flex items-center justify-between text-xs text-gray-500">
             <span>
               Showing 1 to {transactions.length} of {transactions.length}{" "}
               results

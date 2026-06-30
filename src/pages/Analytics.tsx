@@ -157,17 +157,17 @@ export function Analytics() {
   });
 
   return (
-    <div>
+    <div className="animate-fade-up">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Analytics & Compliance</h1>
+          <h1 className="text-2xl font-bold text-white dashboard-title">Analytics & Compliance</h1>
           <p className="text-sm text-gray-400 mt-1">
             CO₂ impact, waste diverted, and transaction compliance stats.
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex bg-[#0f2424] border border-[#1e3a3a] rounded-lg p-0.5">
+          <div className="flex bg-black/25 border border-[var(--border)] rounded-lg p-0.5">
             {["1M", "6M", "1Y"].map((r) => (
               <button
                 key={r}
@@ -180,7 +180,7 @@ export function Analytics() {
               </button>
             ))}
           </div>
-          <Button variant="secondary" size="sm" leftIcon={<Download className="w-3.5 h-3.5" />}>
+          <Button variant="secondary" size="sm" className="dashboard-card" leftIcon={<Download className="w-3.5 h-3.5" />}>
             PDF Report
           </Button>
         </div>
@@ -197,9 +197,9 @@ export function Analytics() {
           {/* Summary Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
             {/* Diverted Waste */}
-            <Card variant="stat">
+            <Card variant="stat" className="dashboard-card">
               <div className="flex justify-between items-start">
-                <div className="p-2 bg-[#2dd4bf]/10 rounded-lg text-[#2dd4bf]">
+                <div className="p-2 bg-[#2dd4bf]/10 rounded-lg text-[#2dd4bf] stat-icon-glow">
                   <Layers className="w-5 h-5" />
                 </div>
                 <Badge variant="teal" size="sm" icon={<TrendingUp className="w-3 h-3" />}>
@@ -218,9 +218,9 @@ export function Analytics() {
             </Card>
 
             {/* CO2 Saved */}
-            <Card variant="stat">
+            <Card variant="stat" className="dashboard-card">
               <div className="flex justify-between items-start">
-                <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-400">
+                <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-400 stat-icon-glow">
                   <Leaf className="w-5 h-5" />
                 </div>
                 <Badge variant="success" size="sm">
@@ -239,9 +239,9 @@ export function Analytics() {
             </Card>
 
             {/* Total Savings */}
-            <Card variant="stat">
+            <Card variant="stat" className="dashboard-card">
               <div className="flex justify-between items-start">
-                <div className="p-2 bg-amber-500/10 rounded-lg text-amber-400">
+                <div className="p-2 bg-amber-500/10 rounded-lg text-amber-400 stat-icon-glow">
                   <DollarSign className="w-5 h-5" />
                 </div>
                 <Badge variant="warning" size="sm">
@@ -260,9 +260,9 @@ export function Analytics() {
             </Card>
 
             {/* Active Escrow Volume */}
-            <Card variant="stat">
+            <Card variant="stat" className="dashboard-card">
               <div className="flex justify-between items-start">
-                <div className="p-2 bg-purple-500/10 rounded-lg text-purple-400">
+                <div className="p-2 bg-purple-500/10 rounded-lg text-purple-400 stat-icon-glow">
                   <BarChart3 className="w-5 h-5" />
                 </div>
                 <span className="text-xs text-purple-400 font-semibold flex items-center">
@@ -284,13 +284,13 @@ export function Analytics() {
           {/* Charts Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Linear Trend Chart */}
-            <Card header={<h3 className="font-semibold text-white">Waste Diversion Trend (kg)</h3>} className="lg:col-span-2">
+            <Card header={<h3 className="font-semibold text-white">Waste Diversion Trend (kg)</h3>} className="lg:col-span-2 dashboard-card">
               <div className="h-64 relative flex flex-col justify-between">
                 <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
-                  <div className="border-b border-[#1e3a3a]/40 h-0" />
-                  <div className="border-b border-[#1e3a3a]/40 h-0" />
-                  <div className="border-b border-[#1e3a3a]/40 h-0" />
-                  <div className="border-b border-[#1e3a3a]/40 h-0" />
+                  <div className="border-b border-[var(--border)] h-0" />
+                  <div className="border-b border-[var(--border)] h-0" />
+                  <div className="border-b border-[var(--border)] h-0" />
+                  <div className="border-b border-[var(--border)] h-0" />
                 </div>
                 <div className="flex-1 w-full mt-4">
                   <svg className="w-full h-full" viewBox={`0 0 ${chartWidth} ${chartHeight}`} preserveAspectRatio="none">
@@ -319,7 +319,7 @@ export function Analytics() {
                           cx={x}
                           cy={y}
                           r="4"
-                          fill="#0b1a1a"
+                          fill="#050d0d"
                           stroke="#2dd4bf"
                           strokeWidth="2"
                         />
@@ -328,7 +328,7 @@ export function Analytics() {
                   </svg>
                 </div>
                 {/* Labels */}
-                <div className="flex justify-between text-[11px] text-gray-500 pt-2 border-t border-[#1e3a3a]/40">
+                <div className="flex justify-between text-[11px] text-gray-500 pt-2 border-t border-[var(--border)]">
                   {monthlyData.map((d) => (
                     <span key={d.label}>{d.label}</span>
                   ))}
@@ -337,7 +337,7 @@ export function Analytics() {
             </Card>
 
             {/* Material distribution donut */}
-            <Card header={<h3 className="font-semibold text-white">Materials by Volume Share</h3>}>
+            <Card header={<h3 className="font-semibold text-white">Materials by Volume Share</h3>} className="dashboard-card">
               <div className="flex flex-col items-center justify-center h-64">
                 {materialStats.length === 0 ? (
                   <div className="text-center text-gray-500">
@@ -349,7 +349,7 @@ export function Analytics() {
                     {/* Donut graphic */}
                     <div className="relative w-32 h-32 shrink-0">
                       <svg className="w-full h-full transform -rotate-90" viewBox="0 0 42 42">
-                        <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#122d2d" strokeWidth="6" />
+                        <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="rgba(79, 209, 197, 0.05)" strokeWidth="6" />
                         {donutSegments.map((seg, idx) => (
                           <circle
                             key={idx}
@@ -393,16 +393,16 @@ export function Analytics() {
           </div>
 
           {/* Compliance & Audit metrics table */}
-          <Card header={
+          <Card className="dashboard-card" header={
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-white">Compliance & Waste Audit Logs</h3>
               <Badge variant="teal" size="sm">Regulatory Compliant (SRS §3.6)</Badge>
             </div>
           }>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto dashboard-table-wrap">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-[#1e3a3a] text-gray-500">
+                  <tr className="border-b border-[var(--border)] text-gray-500">
                     <th className="py-3 px-4">Material / Listing ID</th>
                     <th className="py-3 px-4">Standardized AI Tag</th>
                     <th className="py-3 px-4">Verified Quantity</th>
@@ -419,7 +419,7 @@ export function Analytics() {
                     </tr>
                   ) : (
                     listings.map((l) => (
-                      <tr key={l.id} className="border-b border-[#1e3a3a]/40 text-gray-300">
+                      <tr key={l.id} className="border-b border-[var(--border)] text-gray-300">
                         <td className="py-3.5 px-4">
                           <p className="font-semibold text-white">{l.materialType}</p>
                           <p className="text-[10px] text-gray-500">ID: #{l.id.toUpperCase().slice(0, 8)}</p>
