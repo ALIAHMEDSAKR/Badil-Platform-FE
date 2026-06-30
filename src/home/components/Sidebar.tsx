@@ -9,6 +9,7 @@ import {
   Settings,
   Plus,
 } from 'lucide-react'
+import { BadilLogo } from '../../components/ui/BadilLogo'
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, to: '/dashboard' },
@@ -23,15 +24,7 @@ export function Sidebar() {
   return (
     <aside className="home-sidebar" aria-label="Main navigation">
       <Link to="/" className="home-sidebar__brand">
-        <div className="home-sidebar__logo-icon">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M8 2L14 8L8 14L2 8L8 2Z" fill="#0a1414" />
-          </svg>
-        </div>
-        <div className="home-sidebar__brand-text">
-          <span className="home-sidebar__brand-name">Badil</span>
-          <span className="home-sidebar__brand-sub">Industrial Symbiosis</span>
-        </div>
+        <BadilLogo size="md" subtitle="Industrial Symbiosis" />
       </Link>
 
       <nav className="home-sidebar__nav">

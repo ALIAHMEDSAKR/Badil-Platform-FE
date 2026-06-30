@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { UserRole } from '../types/auth';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, User, Phone } from 'lucide-react';
+import { BadilLogo } from '../components/ui/BadilLogo';
 import loginHero from '../assets/login-hero.png';
 import './LoginPage.css';
 
@@ -87,12 +88,7 @@ export function RegisterPage() {
         </div>
         <div className="auth-hero__content">
           <div className="auth-hero__logo">
-            <div className="auth-hero__logo-icon">
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                <path d="M8 2L14 8L8 14L2 8L8 2Z" fill="#0a1414" />
-              </svg>
-            </div>
-            <span className="auth-hero__logo-text">Badil</span>
+            <BadilLogo size="sm" />
           </div>
 
           <div className="auth-hero__tagline">

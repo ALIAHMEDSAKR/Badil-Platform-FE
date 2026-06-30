@@ -10,6 +10,7 @@ import { AnalyticsPage } from './admin/pages/AnalyticsPage'
 import { SettingsPage } from './admin/pages/SettingsPage'
 import { CreateAdminPage } from './admin/pages/CreateAdminPage'
 import { HomePage } from './pages/HomePage'
+import { LandingPage } from './pages/LandingPage'
 import { ListingDetailPage } from './pages/ListingDetailPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { AdminLoginPage } from './pages/AdminLoginPage'
@@ -45,7 +46,7 @@ const ComingSoon = ({ title }: { title: string }) => (
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
+      <Route path="/" element={<LandingPage />} />
       <Route path="/listing/:id" element={<ListingDetailPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />

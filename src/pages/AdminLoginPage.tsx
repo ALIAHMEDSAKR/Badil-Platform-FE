@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, Shield } from 'lucide-react';
+import { BadilLogo } from '../components/ui/BadilLogo';
 import './LoginPage.css';
 
 export function AdminLoginPage() {
@@ -59,12 +60,7 @@ export function AdminLoginPage() {
         <div className="auth-hero__bg auth-hero__bg--admin" />
         <div className="auth-hero__content">
           <div className="auth-hero__logo">
-            <div className="auth-hero__logo-icon auth-hero__logo-icon--admin">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M8 2L14 8L8 14L2 8L8 2Z" fill="#0a1414" />
-              </svg>
-            </div>
-            <span className="auth-hero__logo-text">Badil</span>
+            <BadilLogo size="sm" />
             <span className="auth-hero__admin-badge">Admin</span>
           </div>
 

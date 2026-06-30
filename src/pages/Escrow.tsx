@@ -257,11 +257,10 @@ export function Escrow() {
                       {/* Step 1: Deposit */}
                       <div className="relative z-10 flex flex-col items-center">
                         <div
-                          className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-bold transition-colors ${
-                            stateInfo.stepIdx >= 1
+                          className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-bold transition-colors ${stateInfo.stepIdx >= 1
                               ? "bg-[#2dd4bf] text-[#0b1a1a] border-[#2dd4bf]"
                               : "bg-[#0f2424] text-gray-500 border-[#2a4a4a]"
-                          }`}
+                            }`}
                         >
                           1
                         </div>
@@ -271,11 +270,10 @@ export function Escrow() {
                       {/* Step 2: Secured */}
                       <div className="relative z-10 flex flex-col items-center">
                         <div
-                          className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-bold transition-colors ${
-                            stateInfo.stepIdx >= 2
+                          className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-bold transition-colors ${stateInfo.stepIdx >= 2
                               ? "bg-[#2dd4bf] text-[#0b1a1a] border-[#2dd4bf]"
                               : "bg-[#0f2424] text-gray-500 border-[#2a4a4a]"
-                          }`}
+                            }`}
                         >
                           2
                         </div>
@@ -285,11 +283,10 @@ export function Escrow() {
                       {/* Step 3: Transit */}
                       <div className="relative z-10 flex flex-col items-center">
                         <div
-                          className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-bold transition-colors ${
-                            stateInfo.stepIdx >= 3
+                          className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-bold transition-colors ${stateInfo.stepIdx >= 3
                               ? "bg-[#2dd4bf] text-[#0b1a1a] border-[#2dd4bf]"
                               : "bg-[#0f2424] text-gray-500 border-[#2a4a4a]"
-                          }`}
+                            }`}
                         >
                           3
                         </div>
@@ -299,11 +296,10 @@ export function Escrow() {
                       {/* Step 4: Released */}
                       <div className="relative z-10 flex flex-col items-center">
                         <div
-                          className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-bold transition-colors ${
-                            stateInfo.stepIdx >= 4
+                          className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-bold transition-colors ${stateInfo.stepIdx >= 4
                               ? "bg-emerald-500 text-[#0b1a1a] border-emerald-500"
                               : "bg-[#0f2424] text-gray-500 border-[#2a4a4a]"
-                          }`}
+                            }`}
                         >
                           ✓
                         </div>

@@ -10,6 +10,7 @@ import {
   LogOut,
   ChevronDown
 } from 'lucide-react';
+import { BadilLogo } from '../components/ui/BadilLogo';
 import './UserDashboard.css';
 
 export function UserDashboardPage() {
@@ -34,12 +35,7 @@ export function UserDashboardPage() {
       {/* ── Header ───────────────────────────────────────────────── */}
       <header className="user-dash__header">
         <div className="user-dash__logo">
-          <div className="user-dash__logo-icon">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <path d="M8 2L14 8L8 14L2 8L8 2Z" fill="#0a1414" />
-            </svg>
-          </div>
-          <span className="user-dash__logo-text">Badil</span>
+          <BadilLogo size="sm" />
         </div>
         <div className="user-dash__header-right">
           <div style={{ position: 'relative' }}>
