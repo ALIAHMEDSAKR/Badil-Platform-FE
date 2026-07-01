@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { Save, User, Lock, Bell, Mail, Smartphone, ShieldCheck } from 'lucide-react'
-import { useAuth } from '../../context/AuthContext'
+import { useAuthStore } from '../../store/authStore'
 
 export function SettingsPage() {
-  const { user } = useAuth()
+  const { user } = useAuthStore()
   
   // Profile State
   const [firstName, setFirstName] = useState(user?.firstName || '')

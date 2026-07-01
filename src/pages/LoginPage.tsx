@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { authApi } from '../api/authApi';
@@ -18,15 +18,20 @@ export function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
+      const destination =
+        from ||
+        (user.role === 'SuperAdmin' || user.role === 'Admin'
+          ? '/admin/dashboard'
+          : '/app');
+      navigate(destination, { replace: true });
+    }
+  }, [isAuthenticated, user, navigate, location]);
+
   // Redirect if already authenticated
   if (isAuthenticated && user) {
-    const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
-    const destination =
-      from ||
-      (user.role === 'SuperAdmin' || user.role === 'Admin'
-        ? '/admin/dashboard'
-        : '/app');
-    navigate(destination, { replace: true });
     return null;
   }
 

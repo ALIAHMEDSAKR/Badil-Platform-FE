@@ -1,12 +1,14 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuthStore } from '../store/authStore';
+import { adminApi } from '../api/adminApi';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, Shield } from 'lucide-react';
 import { BadilLogo } from '../components/ui/BadilLogo';
 import './LoginPage.css';
 
 export function AdminLoginPage() {
-  const { adminLogin, isAuthenticated, isAdmin } = useAuth();
+  const { setAuth, isAuthenticated, user } = useAuthStore();
+  const isAdmin = user?.role === 'Admin' || user?.role === 'SuperAdmin';
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
@@ -32,7 +34,8 @@ export function AdminLoginPage() {
 
     setIsLoading(true);
     try {
-      await adminLogin({ email: email.trim(), password });
+      const response = await adminApi.adminLogin({ email: email.trim(), password });
+      setAuth(response);
       navigate('/admin/dashboard', { replace: true });
     } catch (err: unknown) {
       if (err && typeof err === 'object' && 'response' in err) {

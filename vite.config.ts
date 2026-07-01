@@ -20,6 +20,11 @@ export default defineConfig(({ mode }) => {
           target: target,
           changeOrigin: true,
           secure: false,
+        },
+        '/waste-images': {
+          target: target,
+          changeOrigin: true,
+          secure: false,
         }
       }
     }

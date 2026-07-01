@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Search, UserPlus, Trash2, Shield, User as UserIcon, ShieldAlert } from 'lucide-react'
-import { useAuth } from '../../context/AuthContext'
+import { useAuthStore } from '../../store/authStore'
 import { useUsers, useUpdateUserRole, useDeleteUser } from '../../hooks/admin/useUsers'
 import { UserRole } from '../../types/auth'
 import { LoadingState } from '../../components/admin/LoadingState'
@@ -9,7 +9,8 @@ import { ErrorState } from '../../components/admin/ErrorState'
 import { EmptyState } from '../../components/admin/EmptyState'
 
 export function UserManagementPage() {
-  const { isSuperAdmin } = useAuth()
+  const { user } = useAuthStore()
+  const isSuperAdmin = user?.role === 'SuperAdmin'
   
   const { data: users, isLoading, error, refetch } = useUsers()
   const updateRoleMutation = useUpdateUserRole()

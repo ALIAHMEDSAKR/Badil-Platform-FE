@@ -20,8 +20,21 @@ import {
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { wasteListingApi } from "../api/wasteListingApi";
+import { companyApi } from "../api/companyApi";
 import type { WasteListingDto } from "../types/wasteListing";
+import type { CompanyDto } from "../types/company";
 import { cn } from "../utils/cn";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// Fix Leaflet icon resolution
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
 
 // ── Category Filters ───────────────────────────────────────────────
 
@@ -223,6 +236,7 @@ function ListingCard({
 export function Marketplace() {
   const navigate = useNavigate();
   const [listings, setListings] = useState<WasteListingDto[]>([]);
+  const [companies, setCompanies] = useState<CompanyDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -230,15 +244,19 @@ export function Marketplace() {
     useState<Category>("All Materials");
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
 
-  const fetchListings = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     setError("");
     try {
-      const data = await wasteListingApi.getAll();
-      setListings(data);
+      const [listingsData, companiesData] = await Promise.all([
+        wasteListingApi.getAll(),
+        companyApi.getAll()
+      ]);
+      setListings(listingsData);
+      setCompanies(companiesData);
     } catch {
       setError(
-        "Failed to load marketplace listings. The backend may be offline.",
+        "Failed to load marketplace data. The backend may be offline.",
       );
     } finally {
       setIsLoading(false);
@@ -246,8 +264,8 @@ export function Marketplace() {
   }, []);
 
   useEffect(() => {
-    fetchListings();
-  }, [fetchListings]);
+    fetchData();
+  }, [fetchData]);
 
   // ── Filtered listings ──
   const filtered = useMemo(() => {
@@ -362,7 +380,7 @@ export function Marketplace() {
       {error && (
         <div className="mb-6 px-4 py-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm flex items-center justify-between">
           <span>{error}</span>
-          <Button variant="ghost" size="sm" onClick={fetchListings}>
+          <Button variant="ghost" size="sm" onClick={fetchData}>
             Retry
           </Button>
         </div>
@@ -399,6 +417,48 @@ export function Marketplace() {
               ? `No materials match "${searchQuery}". Try a different search term.`
               : "No listings available yet. Check back soon or post your own waste listing."}
           </p>
+        </div>
+      ) : viewMode === "map" ? (
+        <div className="h-[600px] rounded-xl overflow-hidden border border-[#1e3a3a] relative z-0">
+          <MapContainer
+            center={[30.0444, 31.2357]} // Default to Cairo
+            zoom={6}
+            scrollWheelZoom={true}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {filtered.map((listing) => {
+              const comp = companies.find((c) => c.userId === listing.userId);
+              if (!comp || !comp.latitude || !comp.longitude) return null;
+              const tag = getMaterialTag(listing.materialType);
+              return (
+                <Marker key={listing.id} position={[comp.latitude, comp.longitude]}>
+                  <Popup className="dashboard-popup">
+                    <div className="p-1">
+                      <h3 className="font-bold text-gray-800 text-sm mb-1">{listing.materialType}</h3>
+                      <p className="text-xs text-gray-600 mb-2">{comp.name}</p>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="font-semibold text-teal-600">${listing.suggestedPrice}</span>
+                        <span className="text-xs text-gray-500">{listing.quantity} kg</span>
+                      </div>
+                      <button 
+                        className="mt-3 w-full bg-teal-500 text-white py-1 rounded text-xs hover:bg-teal-600"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/app/marketplace/${listing.id}`);
+                        }}
+                      >
+                        View Details
+                      </button>
+                    </div>
+                  </Popup>
+                </Marker>
+              );
+            })}
+          </MapContainer>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">

@@ -11,8 +11,35 @@ import { Input } from "../components/ui/Input";
 import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
 import { companyApi } from "../api/companyApi";
+import { verificationApi } from "../api/verificationApi";
 import { useAuthStore } from "../store/authStore";
 import type { CompanyDto } from "../types/company";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// Fix Leaflet icon resolution in Vite
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
+
+function LocationMarker({
+  position,
+  setPosition,
+}: {
+  position: [number, number];
+  setPosition: (p: [number, number]) => void;
+}) {
+  useMapEvents({
+    click(e) {
+      setPosition([e.latlng.lat, e.latlng.lng]);
+    },
+  });
+  return <Marker position={position} />;
+}
 
 // ── Decode user ID from token helper ──
 function getUserIdFromToken(token: string | null): string | null {
@@ -38,6 +65,7 @@ export function Settings() {
   const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [uploadingDoc, setUploadingDoc] = useState(false);
 
   // Company Profile Details
   const [company, setCompany] = useState<CompanyDto | null>(null);
@@ -60,7 +88,7 @@ export function Settings() {
       const allCompanies = await companyApi.getAll();
       // Filter for company owned by this user
       const userCompany = allCompanies.find(
-        (c) => c.ownerId === currentUserId || c.ownerId?.toLowerCase() === currentUserId?.toLowerCase()
+        (c) => c.userId === currentUserId || c.userId?.toLowerCase() === currentUserId?.toLowerCase()
       );
 
       if (userCompany) {
@@ -133,6 +161,36 @@ export function Settings() {
       setError(err?.response?.data?.message || "Failed to save settings. Please try again.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleUploadVerification = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || !e.target.files[0]) return;
+    const file = e.target.files[0];
+    
+    if (!company) {
+      setError("Please save your company profile first before uploading verification docs.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    
+    setUploadingDoc(true);
+    setError("");
+    setSuccessMsg("");
+    try {
+      const myReqs = await verificationApi.getMine();
+      let pendingReq = myReqs.find((r) => r.companyId === company.id && r.status === "Pending");
+      if (!pendingReq) {
+        pendingReq = await verificationApi.create({ companyId: company.id, documentUrls: [] });
+      }
+      await verificationApi.uploadDocument(pendingReq.id, file);
+      setSuccessMsg("Verification document uploaded! It is now pending review.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Failed to upload document.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } finally {
+      setUploadingDoc(false);
     }
   };
 
@@ -285,8 +343,28 @@ export function Settings() {
                   />
                 </div>
                 <p className="text-[11px] text-gray-500 mt-2">
-                  Coordinates are used by the Marketplace Discovery map to match nearby waste streams.
+                  Coordinates are used by the Marketplace Discovery map to match nearby waste streams. You can click on the map to set your location precisely.
                 </p>
+                <div className="h-64 rounded-lg overflow-hidden border border-[#1e3a3a] mt-4 relative z-0">
+                  <MapContainer
+                    center={[latitude, longitude]}
+                    zoom={13}
+                    scrollWheelZoom={false}
+                    style={{ height: "100%", width: "100%" }}
+                  >
+                    <TileLayer
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    <LocationMarker
+                      position={[latitude, longitude]}
+                      setPosition={(p) => {
+                        setLatitude(p[0]);
+                        setLongitude(p[1]);
+                      }}
+                    />
+                  </MapContainer>
+                </div>
               </div>
 
               {/* Save Button */}
@@ -299,6 +377,48 @@ export function Settings() {
                 </Button>
               </div>
             </form>
+          </Card>
+        </div>
+
+        {/* Regulatory Verification Card */}
+        <div className="lg:col-span-3">
+          <Card
+            header={
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-[#2dd4bf]" />
+                <h3 className="font-semibold text-white">Regulatory Verification</h3>
+              </div>
+            }
+          >
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+              <div>
+                <p className="text-sm text-gray-300">
+                  To unlock Escrow features and build trust, Badil requires you to upload your commercial register (سجل تجاري) or tax document (بطاقة ضريبية).
+                </p>
+                <div className="mt-3 flex items-center gap-2">
+                  <span className="text-xs font-semibold uppercase text-gray-500">Status:</span>
+                  <Badge variant={company?.isVerified ? "success" : "warning"} size="sm">
+                    {company?.isVerified ? "Verified" : "Pending or Unverified"}
+                  </Badge>
+                </div>
+              </div>
+              <div className="shrink-0">
+                <Button
+                  variant="outline"
+                  isLoading={uploadingDoc}
+                  onClick={() => document.getElementById("verification-upload")?.click()}
+                >
+                  Upload Document
+                </Button>
+                <input
+                  type="file"
+                  id="verification-upload"
+                  className="hidden"
+                  accept=".pdf,.png,.jpg,.jpeg"
+                  onChange={handleUploadVerification}
+                />
+              </div>
+            </div>
           </Card>
         </div>
       </div>

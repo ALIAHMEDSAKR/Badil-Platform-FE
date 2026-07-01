@@ -1,6 +1,7 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuthStore } from '../store/authStore';
+import { authApi } from '../api/authApi';
 import { UserRole } from '../types/auth';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, User, Phone } from 'lucide-react';
 import { BadilLogo } from '../components/ui/BadilLogo';
@@ -8,7 +9,7 @@ import loginHero from '../assets/login-hero.png';
 import './LoginPage.css';
 
 export function RegisterPage() {
-  const { register, isAuthenticated, user } = useAuth();
+  const { setAuth, isAuthenticated, user } = useAuthStore();
   const navigate = useNavigate();
 
   const [firstName, setFirstName] = useState('');
@@ -22,14 +23,17 @@ export function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  if (isAuthenticated && user) {
-    const destination =
-      user.role === 'Admin' || user.role === 'SuperAdmin'
-        ? '/admin/dashboard'
-        : '/dashboard';
-    navigate(destination, { replace: true });
-    return null;
-  }
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const destination =
+        user.role === 'Admin' || user.role === 'SuperAdmin'
+          ? '/admin/dashboard'
+          : '/app';
+      navigate(destination, { replace: true });
+    }
+  }, [isAuthenticated, user, navigate]);
+
+  if (isAuthenticated && user) return null;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -52,7 +56,7 @@ export function RegisterPage() {
 
     setIsLoading(true);
     try {
-      await register({
+      const response = await authApi.register({
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         email: email.trim(),
@@ -60,6 +64,7 @@ export function RegisterPage() {
         password,
         role: UserRole.User,
       });
+      setAuth(response);
     } catch (err: unknown) {
       if (err && typeof err === 'object' && 'response' in err) {
         const axiosErr = err as { response?: { data?: { message?: string, errors?: Record<string, string[]> }; status?: number } };

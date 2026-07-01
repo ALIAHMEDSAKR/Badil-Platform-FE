@@ -6,7 +6,8 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Save, Upload, X, FileText, AlertCircle } from "lucide-react";
+import { ArrowLeft, Save, Upload, X, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
 import { Select } from "../components/ui/Select";
@@ -120,7 +121,7 @@ export function NewListing() {
           quantity,
           description,
           suggestedPrice,
-          imageUrls: imageUrls.length > 0 ? imageUrls : null,
+          imageUrls: imageUrls,
         });
         listingId = created.id;
       }
@@ -131,12 +132,13 @@ export function NewListing() {
           await wasteListingApi.uploadImage(listingId, selectedFile);
         } catch (uploadErr) {
           console.error("Failed to upload image:", uploadErr);
-          // Don't block listing success redirect if image upload fails, just log it
+          toast.error("Listing created, but image upload failed.");
         }
       }
 
       navigate("/app/listings");
     } catch (err: any) {
+      console.error("Full 400 response:", err?.response?.data);
       setError(err?.response?.data?.message || "Failed to save listing. Please try again.");
     } finally {
       setIsLoading(false);

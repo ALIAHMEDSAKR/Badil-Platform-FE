@@ -9,7 +9,7 @@ import {
   LogOut,
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { useAuth } from '../context/AuthContext'
+import { useAuthStore } from '../store/authStore'
 import apiClient from '../api/apiClient'
 import './admin.css'
 
@@ -31,7 +31,7 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 
 export function AdminLayout() {
   const navigate = useNavigate()
-  const { user, logout: contextLogout } = useAuth()
+  const { user, logout: contextLogout } = useAuthStore()
 
   const initials =
     user?.firstName && user?.lastName

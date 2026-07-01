@@ -92,7 +92,7 @@ export function ListingDetailPage() {
     <div className="animate-fade-up max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white dashboard-title">{listing.title || 'Listing Details'}</h1>
+        <h1 className="text-2xl font-bold text-white dashboard-title">{listing.materialType || 'Listing Details'}</h1>
         <Button variant="ghost" leftIcon={<Bookmark className="w-4 h-4" />}>Save</Button>
       </div>
 

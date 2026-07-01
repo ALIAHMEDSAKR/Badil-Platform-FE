@@ -37,7 +37,7 @@ export interface UpdateCompanyCommand {
  */
 export interface CompanyDto {
   id: string; // uuid
-  ownerId: string; // uuid — the user who owns this company
+  userId: string; // uuid — the user who owns this company
   name: string;
   sector: string;
   address: string;

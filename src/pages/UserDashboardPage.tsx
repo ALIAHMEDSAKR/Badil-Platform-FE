@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuthStore } from '../store/authStore';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -14,7 +14,7 @@ import { BadilLogo } from '../components/ui/BadilLogo';
 import './UserDashboard.css';
 
 export function UserDashboardPage() {
-  const { user, logout } = useAuth();
+  const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
 

@@ -12,6 +12,7 @@ import type { LoginResponse, UserRoleString } from '../types/auth';
 
 /** Stored user shape — matches what AuthContext already persists */
 export interface StoredUser {
+  id: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -60,6 +61,16 @@ function isTokenValid(token: string): boolean {
   }
 }
 
+/** Extract user ID from JWT token claims */
+function extractIdFromToken(token: string): string {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || payload.nameid || payload.sub || '';
+  } catch {
+    return '';
+  }
+}
+
 /** Derive role flags from a user object */
 function deriveRoleFlags(user: StoredUser | null) {
   return {
@@ -82,7 +93,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   // ── Actions ──
 
   setAuth: (response: LoginResponse) => {
+    const id = extractIdFromToken(response.token);
     const storedUser: StoredUser = {
+      id,
       email: response.email,
       firstName: response.firstName,
       lastName: response.lastName,
@@ -125,7 +138,12 @@ export const useAuthStore = create<AuthState>((set) => ({
       // Validate token expiry before restoring
       if (isTokenValid(storedToken)) {
         try {
-          const user: StoredUser = JSON.parse(storedUser);
+          const user = JSON.parse(storedUser) as StoredUser;
+          // Ensure old stored users are migrated to have the ID
+          if (!user.id) {
+            user.id = extractIdFromToken(storedToken);
+          }
+          
           set({
             user,
             token: storedToken,

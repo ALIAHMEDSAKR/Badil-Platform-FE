@@ -9,7 +9,6 @@ import { UserManagementPage } from './admin/pages/UserManagementPage'
 import { AnalyticsPage } from './admin/pages/AnalyticsPage'
 import { SettingsPage } from './admin/pages/SettingsPage'
 import { CreateAdminPage } from './admin/pages/CreateAdminPage'
-import { HomePage } from './pages/HomePage'
 import { LandingPage } from './pages/LandingPage'
 import { ListingDetailPage } from './pages/ListingDetailPage'
 import { RegisterPage } from './pages/RegisterPage'
@@ -29,6 +28,23 @@ import { NewListing } from './pages/NewListing'
 import { Analytics } from './pages/Analytics'
 import { Escrow } from './pages/Escrow'
 import { Settings } from './pages/Settings'
+
+// Phase 4 New Pages
+import { MyRequests } from './pages/MyRequests'
+import { NewRequest } from './pages/NewRequest'
+import { RequestDetailPage } from './pages/RequestDetailPage'
+import { Messages } from './pages/Messages'
+
+// Phase 5 New Pages
+import { AiMatches } from './pages/AiMatches'
+import { MapExplore } from './pages/MapExplore'
+import { Notifications } from './pages/Notifications'
+
+// Phase 6 Advanced Pages
+import { TransactionDetail } from './pages/TransactionDetail'
+import { Disputes } from './pages/Disputes'
+import { ImpactReport } from './pages/ImpactReport'
+import { ComplianceReport } from './pages/ComplianceReport'
 
 // Inline placeholder for new layout routes that aren't built yet
 const ComingSoon = ({ title }: { title: string }) => (
@@ -73,7 +89,18 @@ export default function App() {
         <Route path="listings/edit/:id" element={<NewListing />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="escrow" element={<Escrow />} />
+        <Route path="transactions/:id" element={<TransactionDetail />} />
+        <Route path="disputes" element={<Disputes />} />
+        <Route path="impact" element={<ImpactReport />} />
+        <Route path="compliance" element={<ComplianceReport />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="requests" element={<MyRequests />} />
+        <Route path="requests/new" element={<NewRequest />} />
+        <Route path="requests/:id" element={<RequestDetailPage />} />
+        <Route path="messages" element={<Messages />} />
+        <Route path="matches" element={<AiMatches />} />
+        <Route path="explore" element={<MapExplore />} />
+        <Route path="notifications" element={<Notifications />} />
         <Route path="support" element={<ComingSoon title="Support" />} />
       </Route>
 

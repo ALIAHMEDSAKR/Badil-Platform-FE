@@ -4,8 +4,8 @@
 // Matches screen5.png (Factory Dashboard) layout structure
 // ═══════════════════════════════════════════════════════════════════
 
-import { useState } from 'react';
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom';
 import {
   LayoutDashboard,
   ListOrdered,
@@ -16,12 +16,20 @@ import {
   HelpCircle,
   Bell,
   Search,
-  Plus,
-  LogOut,
   Menu,
   X,
+  Target,
+  MessageSquare,
+  MapPin,
+  Sparkles,
+  AlertOctagon,
+  Leaf,
+  FileCheck,
+  Plus,
+  LogOut
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
+import { notificationApi } from '../../api/notificationApi';
 import { cn } from '../../utils/cn';
 import { Button } from '../ui/Button';
 import '../../styles/dashboard-theme.css';
@@ -31,12 +39,19 @@ import '../../styles/dashboard-theme.css';
 const mainNavItems = [
   { to: '/app', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/app/listings', icon: ListOrdered, label: 'Listings' },
+  { to: '/app/requests', icon: Target, label: 'Requests' },
   { to: '/app/marketplace', icon: Store, label: 'Marketplace' },
+  { to: '/app/explore', icon: MapPin, label: 'Map Explore' },
+  { to: '/app/matches', icon: Sparkles, label: 'AI Matches' },
+  { to: '/app/messages', icon: MessageSquare, label: 'Messages' },
   { to: '/app/analytics', icon: BarChart3, label: 'Analytics' },
   { to: '/app/escrow', icon: Shield, label: 'Escrow' },
+  { to: '/app/disputes', icon: AlertOctagon, label: 'Disputes' },
 ];
 
 const bottomNavItems = [
+  { to: '/app/impact', icon: Leaf, label: 'Impact Report' },
+  { to: '/app/compliance', icon: FileCheck, label: 'Compliance' },
   { to: '/app/settings', icon: Settings, label: 'Settings' },
   { to: '/app/support', icon: HelpCircle, label: 'Support' },
 ];
@@ -82,10 +97,33 @@ export function DashboardLayout() {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Use useEffect to fetch unread count periodically or on mount
+  useEffect(() => {
+    async function fetchUnread() {
+      try {
+        const { count } = await notificationApi.getUnreadCount();
+        setUnreadCount(count);
+      } catch (err) {
+        // ignore
+      }
+    }
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 60000); // refresh every minute
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const query = e.currentTarget.value.trim();
+      navigate(`/app/marketplace${query ? `?q=${encodeURIComponent(query)}` : ''}`);
+    }
   };
 
   const closeMobile = () => setSidebarOpen(false);
@@ -110,14 +148,14 @@ export function DashboardLayout() {
         )}
       >
         {/* Company header */}
-        <div className="px-5 py-5 border-b border-[var(--border)]">
+        <Link to="/app/settings" className="px-5 py-5 border-b border-[var(--border)] block hover:bg-[#1a2e2e] transition-colors cursor-pointer" onClick={closeMobile}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-[#2dd4bf]/20 flex items-center justify-center stat-icon-glow text-[#2dd4bf]">
                 <div className="w-5 h-5 rounded bg-[#2dd4bf]" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white truncate">
+                <p className="text-sm font-semibold text-white truncate max-w-[120px]">
                   {user?.firstName || 'Badil'} {user?.lastName || 'User'}
                 </p>
                 <p className="text-[11px] text-gray-500">Industrial Symbiosis</p>
@@ -125,12 +163,12 @@ export function DashboardLayout() {
             </div>
             <button
               className="lg:hidden p-1 text-gray-400 hover:text-white"
-              onClick={closeMobile}
+              onClick={(e) => { e.preventDefault(); closeMobile(); }}
             >
               <X className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        </Link>
 
         {/* Main nav */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
@@ -173,15 +211,23 @@ export function DashboardLayout() {
                 type="text"
                 placeholder="Search orders, materials..."
                 className="bg-transparent text-sm text-gray-300 placeholder:text-gray-500 outline-none w-full"
+                onKeyDown={handleSearch}
               />
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             {/* Notification bell */}
-            <button className="relative p-2 text-gray-400 hover:text-white rounded-lg hover:bg-[#1a2e2e] transition-colors">
+            <button 
+              className="relative p-2 text-gray-400 hover:text-white rounded-lg hover:bg-[#1a2e2e] transition-colors"
+              onClick={() => navigate('/app/notifications')}
+            >
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#2dd4bf] rounded-full animate-pulse" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-amber-500 text-black text-[10px] font-bold rounded-full flex items-center justify-center animate-bounce-short">
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </span>
+              )}
             </button>
 
             {/* New Listing CTA */}

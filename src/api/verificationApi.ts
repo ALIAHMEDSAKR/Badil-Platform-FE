@@ -47,6 +47,18 @@ export const verificationApi = {
     return res.data;
   },
 
+  /** POST /api/VerificationRequest/{id}/upload-document — upload verification file */
+  uploadDocument: async (requestId: string, file: File): Promise<{ url: string }> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await client.post<{ url: string }>(
+      `/VerificationRequest/${requestId}/upload-document`,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return res.data;
+  },
+
   /** PUT /api/VerificationRequest/{id} — admin: update status */
   update: async (
     id: string,
