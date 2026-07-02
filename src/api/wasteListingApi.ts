@@ -65,8 +65,7 @@ export const wasteListingApi = {
     formData.append("file", file);
     const res = await client.post<{ url: string }>(
       `/WasteListing/${id}/upload-image`,
-      formData,
-      { headers: { "Content-Type": "multipart/form-data" } },
+      formData
     );
     return res.data;
   },

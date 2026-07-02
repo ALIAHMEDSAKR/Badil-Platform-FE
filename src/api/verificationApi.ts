@@ -53,8 +53,7 @@ export const verificationApi = {
     formData.append("file", file);
     const res = await client.post<{ url: string }>(
       `/VerificationRequest/${requestId}/upload-document`,
-      formData,
-      { headers: { "Content-Type": "multipart/form-data" } }
+      formData
     );
     return res.data;
   },

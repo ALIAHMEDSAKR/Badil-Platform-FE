@@ -74,12 +74,12 @@ export function Escrow() {
     setIsLoading(true);
     setError("");
     try {
-      const [txRes, listRes] = await Promise.allSettled([
+      const [txRes, listRes] = await Promise.all([
         transactionApi.getMine(),
         wasteListingApi.getAll(), // Fetch all to map listing details
       ]);
-      if (txRes.status === "fulfilled") setTransactions(txRes.value);
-      if (listRes.status === "fulfilled") setListings(listRes.value);
+      setTransactions(txRes);
+      setListings(listRes);
     } catch {
       setError("Failed to fetch escrow transactions. The backend may be offline.");
     } finally {

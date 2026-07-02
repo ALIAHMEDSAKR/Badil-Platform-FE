@@ -98,6 +98,11 @@ export function NewListing() {
       setError("Suggested price cannot be negative.");
       return;
     }
+    if (!selectedFile && imageUrls.length === 0) {
+      setError("Please upload at least one image of the material.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
 
     setIsLoading(true);
     setError("");

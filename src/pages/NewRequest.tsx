@@ -91,10 +91,9 @@ export function NewRequest() {
                 <Input
                   label="Target Quantity"
                   type="number"
-                  min="0"
                   step="any"
                   placeholder="e.g. 500"
-                  value={targetQuantity}
+                  value={targetQuantity || ""}
                   onChange={(e) => setTargetQuantity(Number(e.target.value))}
                   required
                 />

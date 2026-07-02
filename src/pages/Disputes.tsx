@@ -48,18 +48,16 @@ export function Disputes() {
     setIsLoading(true);
     setError("");
     try {
-      const [dispRes, txRes] = await Promise.allSettled([
+      const [dispRes, txRes] = await Promise.all([
         disputeApi.getAll(),
         transactionApi.getMine()
       ]);
 
-      if (dispRes.status === "fulfilled" && currentUserId) {
+      if (currentUserId) {
         // Filter out only disputes raised by the current user
-        setDisputes(dispRes.value.filter(d => d.raisedByUserId === currentUserId));
+        setDisputes(dispRes.filter(d => d.raisedByUserId === currentUserId));
       }
-      if (txRes.status === "fulfilled") {
-        setTransactions(txRes.value);
-      }
+      setTransactions(txRes);
     } catch {
       setError("Failed to load dispute data.");
     } finally {
@@ -140,7 +138,7 @@ export function Disputes() {
         </div>
       )}
 
-      {disputes.length === 0 ? (
+      {!error && disputes.length === 0 ? (
         <div className="text-center py-20 bg-black/10 border border-[var(--border)] rounded-xl">
           <AlertOctagon className="w-16 h-16 text-gray-700 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-300">No Open Disputes</h3>
